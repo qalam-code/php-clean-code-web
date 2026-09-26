@@ -229,6 +229,13 @@ $routeurPrefixe->ajouter('x/facture', function () {}, function () { return new P
 $v->vrai($routeurPrefixe->resoudre('/api/x/facture') !== null, 'prefixe exact retire');
 $v->vrai($routeurPrefixe->resoudre('/API/x/facture') !== null, 'casse du prefixe ignoree');
 $v->egal(null, $routeurPrefixe->resoudre('/apix/facture'), 'prefixe partiel conserve');
+$doublonRefuse = false;
+try {
+    $routeurPrefixe->ajouter('/X/FACTURE/', function () {}, function () { return new PresentateurCommun(); });
+} catch (InvalidArgumentException $e) {
+    $doublonRefuse = true;
+}
+$v->vrai($doublonRefuse, 'route normalisee en double refusee');
 
 // Le presentateur de la route garde la main sur le format de la reponse 405.
 $presentateur405 = new class extends PresentateurCommun {

@@ -102,6 +102,10 @@ final class Routeur
 **Rôle** — Table des routes. Ne fait que résoudre ; c'est `Aiguillage` qui
 exécute.
 
+Deux déclarations dont les chemins deviennent identiques après normalisation
+sont refusées avec `InvalidArgumentException`, au lieu de remplacer
+silencieusement la route précédente.
+
 **Chaque route porte son propre présentateur**, et c'est la décision de
 conception la plus importante de cette classe.
 

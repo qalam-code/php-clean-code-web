@@ -53,7 +53,12 @@ final class Routeur
         callable $presentateur,
         array $methodes = []
     ): void {
-        $this->routes[$this->normaliser($chemin)] = [
+        $cheminNormalise = $this->normaliser($chemin);
+        if (array_key_exists($cheminNormalise, $this->routes)) {
+            throw new \InvalidArgumentException('Route deja declaree : ' . $cheminNormalise);
+        }
+
+        $this->routes[$cheminNormalise] = [
             'action'       => $action,
             'presentateur' => $presentateur,
             'methodes'     => array_map('strtoupper', $methodes),
