@@ -1,0 +1,15 @@
+﻿# Configuration locale et secrets
+.env
+.env.*
+!.env.example
+outils/caracterisation/config.php
+outils/caracterisation/cases.php
+
+# Dependances et caches PHP
+/vendor/
+/.phpunit.cache/
+
+# Documents generes et fichiers temporaires de bureautique
+docs/Documentation_phpCleanCode.docx
+docs/~$*.docx
+

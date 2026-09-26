@@ -218,3 +218,4 @@ SetEnv BASE_URI          /exemple
 Pour les autres réglages (hôte, nom de base), un repli est acceptable : une
 mauvaise valeur se manifeste immédiatement par une erreur de connexion, pas par
 une faille silencieuse.
+

@@ -76,3 +76,4 @@ abstract class PresentateurAbstrait
         return $this->reponse($code, ['statut' => $statut, 'message' => $message]);
     }
 }
+

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace PhpCleanCode;
 
-use PhpCleanCode\Domain\Contrat\AuthentificationInterface;
-use PhpCleanCode\Domain\Contrat\SurveillanceInterface;
+use PhpCleanCode\Application\Port\AuthentificationInterface;
+use PhpCleanCode\Application\Port\SurveillanceInterface;
 use PhpCleanCode\Http\Requete;
 use PhpCleanCode\Http\Routeur;
 use PhpCleanCode\Infrastructure\AuthentificationDifferee;
@@ -107,3 +107,4 @@ abstract class Fabrique
         return new AuthentificationDifferee($construire);
     }
 }
+

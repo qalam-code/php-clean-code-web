@@ -1,0 +1,27 @@
+﻿# Toutes les requetes vers index.php, sauf les fichiers reellement presents.
+RewriteEngine On
+
+# Adaptez au dossier d'installation. A la racine d'un domaine : RewriteBase /
+RewriteBase /exemple/
+
+# Apache retire l'en-tete Authorization avant PHP quand CGIPassAuth est
+# desactive -- configuration frequente en mutualise. Sans cette ligne, tous
+# les endpoints authentifies repondent "token introuvable" alors que le
+# client l'envoie bien.
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Configuration : a definir sur le serveur, jamais dans un fichier versionne.
+# Decommentez et renseignez, ou utilisez la configuration du vhost.
+#
+# SetEnv JWT_SECRET        remplacez-moi-par-une-valeur-aleatoire-longue
+# SetEnv DB_HOTE           127.0.0.1
+# SetEnv DB_BASE           exemple
+# SetEnv DB_UTILISATEUR    exemple
+# SetEnv DB_MOT_DE_PASSE   ...
+# SetEnv BASE_URI          /exemple
+

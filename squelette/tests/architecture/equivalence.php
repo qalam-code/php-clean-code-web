@@ -276,3 +276,4 @@ $v->egal(
 );
 
 exit($v->bilan());
+
