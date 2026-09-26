@@ -22,15 +22,14 @@ use PhpCleanCode\Domain\Entite\Identite;
  */
 final class ResolveurDepot implements ResolveurActeurInterface
 {
-    private DepotUtilisateurInterface $utilisateurs;
+    private $utilisateurs;
 
     public function __construct(DepotUtilisateurInterface $utilisateurs)
     {
         $this->utilisateurs = $utilisateurs;
     }
 
-    public function resoudre(array $charge): ?Identite
-    {
+    public function resoudre(array $charge){
         if (!isset($charge['sub']) || !is_numeric($charge['sub'])) {
             return null;
         }

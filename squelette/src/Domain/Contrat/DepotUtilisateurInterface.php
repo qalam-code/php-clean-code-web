@@ -21,9 +21,9 @@ use PhpCleanCode\Domain\Entite\Identite;
 interface DepotUtilisateurInterface extends DepotInterface
 {
     /** @return Identite|null null si le couple est refuse. */
-    public function parIdentifiants(string $identifiant, string $motDePasse): ?Identite;
+    public function parIdentifiants(string $identifiant, string $motDePasse);
 
     /** @return Identite|null null si le compte n'existe plus ou est desactive. */
-    public function parId(int $id): ?Identite;
+    public function parId(int $id);
 }
 

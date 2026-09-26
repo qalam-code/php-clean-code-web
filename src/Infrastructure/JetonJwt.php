@@ -30,7 +30,7 @@ use PhpCleanCode\Domain\ErreurMetier;
  */
 final class JetonJwt implements JetonInterface
 {
-    private string $secret;
+    private $secret;
 
     public function __construct(string $secret)
     {

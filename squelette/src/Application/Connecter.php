@@ -24,10 +24,10 @@ use PhpCleanCode\Domain\ErreurMetier;
  */
 final class Connecter
 {
-    private DepotUtilisateurInterface $utilisateurs;
-    private JetonInterface $jetons;
-    private JournalInterface $journal;
-    private int $dureeJeton;
+    private $utilisateurs;
+    private $jetons;
+    private $journal;
+    private $dureeJeton;
 
     public function __construct(
         DepotUtilisateurInterface $utilisateurs,

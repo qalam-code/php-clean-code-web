@@ -28,8 +28,8 @@ use Throwable;
  */
 final class Aiguillage
 {
-    private Routeur $routeur;
-    private PresentateurAbstrait $secours;
+    private $routeur;
+    private $secours;
     /** @var callable(Throwable): void|null */
     private $journaliseur;
 
@@ -43,7 +43,7 @@ final class Aiguillage
     public function __construct(
         Routeur $routeur,
         PresentateurAbstrait $secours,
-        ?callable $journaliseur = null
+        $journaliseur = null
     ) {
         $this->routeur      = $routeur;
         $this->secours      = $secours;
@@ -87,8 +87,7 @@ final class Aiguillage
         }
     }
 
-    private function journaliser(Throwable $e): void
-    {
+    private function journaliser(Throwable $e){
         if ($this->journaliseur === null) {
             return;
         }

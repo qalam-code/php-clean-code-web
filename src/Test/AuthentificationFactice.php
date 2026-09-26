@@ -19,11 +19,11 @@ use PhpCleanCode\Domain\ErreurMetier;
  */
 final class AuthentificationFactice implements AuthentificationInterface
 {
-    private ?Identite $identite;
-    private ?ErreurMetier $refus;
-    public int $appels = 0;
+    private $identite;
+    private $refus;
+    public $appels = 0;
 
-    private function __construct(?Identite $identite, ?ErreurMetier $refus)
+    private function __construct($identite, $refus)
     {
         $this->identite = $identite;
         $this->refus    = $refus;

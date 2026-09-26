@@ -6,7 +6,7 @@
  *
  * Exemples :
  *     C:\wamp64\bin\php\php7.0.33\php.exe outils\compat.php src App\Paiement 7.0
- *     php outils/compat.php squelette/src App\Exemple 7.4
+ *     php outils/compat.php squelette/src App\Exemple 7.0
  *
  * A EXECUTER AVEC LE BINAIRE DE LA VERSION VISEE, pas avec un autre.
  *
@@ -33,7 +33,7 @@
 
 $racine   = isset($argv[1]) ? $argv[1] : dirname(__DIR__) . '/src';
 $prefixe  = isset($argv[2]) ? rtrim($argv[2], '\\') . '\\' : 'PhpCleanCode\\';
-$cible    = isset($argv[3]) ? $argv[3] : '7.4';
+$cible    = isset($argv[3]) ? $argv[3] : '7.0';
 
 $racine = realpath($racine);
 if ($racine === false) {

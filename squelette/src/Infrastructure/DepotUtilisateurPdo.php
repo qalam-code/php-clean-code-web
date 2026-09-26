@@ -25,8 +25,7 @@ use PhpCleanCode\Infrastructure\DepotPdo;
  */
 final class DepotUtilisateurPdo extends DepotPdo implements DepotUtilisateurInterface
 {
-    public function parIdentifiants(string $identifiant, string $motDePasse): ?Identite
-    {
+    public function parIdentifiants(string $identifiant, string $motDePasse){
         $ligne = $this->uneLigne(
             'SELECT id, nom, mot_de_passe FROM utilisateurs'
             . ' WHERE identifiant = :identifiant AND actif = 1 LIMIT 1',
@@ -48,8 +47,7 @@ final class DepotUtilisateurPdo extends DepotPdo implements DepotUtilisateurInte
         return new Identite((int) $ligne['id'], (string) $ligne['nom']);
     }
 
-    public function parId(int $id): ?Identite
-    {
+    public function parId(int $id){
         $ligne = $this->uneLigne(
             'SELECT id, nom FROM utilisateurs WHERE id = :id AND actif = 1 LIMIT 1',
             [':id' => $id]

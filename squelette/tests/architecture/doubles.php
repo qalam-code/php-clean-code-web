@@ -21,16 +21,14 @@ use PhpCleanCode\Domain\Entite\Identite;
 final class DepotFactureFactice implements DepotFactureInterface
 {
     /** @var array<string,Facture> */
-    private array $parNumero = [];
-    public int $appels = 0;
+    private $parNumero = [];
+    public $appels = 0;
 
-    public function ajouter(Facture $facture): void
-    {
+    public function ajouter(Facture $facture){
         $this->parNumero[$facture->numero()] = $facture;
     }
 
-    public function trouverParNumero(string $numero): ?Facture
-    {
+    public function trouverParNumero(string $numero){
         $this->appels++;
         return $this->parNumero[$numero] ?? null;
     }
@@ -50,18 +48,16 @@ final class DepotFactureFactice implements DepotFactureInterface
 final class DepotUtilisateurFactice implements DepotUtilisateurInterface
 {
     /** @var array<int,array{identite:Identite,motDePasse:string}> */
-    private array $comptes = [];
+    private $comptes = [];
 
-    public function ajouter(int $id, string $nom, string $motDePasse): void
-    {
+    public function ajouter(int $id, string $nom, string $motDePasse){
         $this->comptes[$id] = [
             'identite'   => new Identite($id, $nom),
             'motDePasse' => $motDePasse,
         ];
     }
 
-    public function parIdentifiants(string $identifiant, string $motDePasse): ?Identite
-    {
+    public function parIdentifiants(string $identifiant, string $motDePasse){
         foreach ($this->comptes as $compte) {
             if ($compte['identite']->nom() === $identifiant
                 && $compte['motDePasse'] === $motDePasse) {
@@ -71,14 +67,12 @@ final class DepotUtilisateurFactice implements DepotUtilisateurInterface
         return null;
     }
 
-    public function parId(int $id): ?Identite
-    {
+    public function parId(int $id){
         return isset($this->comptes[$id]) ? $this->comptes[$id]['identite'] : null;
     }
 
     /** Simule une desactivation : le jeton reste valide, le compte non. */
-    public function desactiver(int $id): void
-    {
+    public function desactiver(int $id){
         unset($this->comptes[$id]);
     }
 }

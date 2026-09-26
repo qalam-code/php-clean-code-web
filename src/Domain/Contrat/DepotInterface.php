@@ -10,7 +10,7 @@ namespace PhpCleanCode\Domain\Contrat;
  *
  *     interface DepotFactureInterface extends DepotInterface
  *     {
- *         public function trouverParNumero(string $numero): ?Facture;
+ *         public function trouverParNumero(string $numero);
  *         public function impayeesDe(int $abonneId): array;
  *     }
  *

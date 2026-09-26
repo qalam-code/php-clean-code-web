@@ -29,7 +29,7 @@ final class AuthentificationDifferee implements AuthentificationInterface
 {
     /** @var callable(): AuthentificationInterface */
     private $construire;
-    private ?AuthentificationInterface $reel = null;
+    private $reel = null;
 
     /** @param callable(): AuthentificationInterface $construire */
     public function __construct(callable $construire)

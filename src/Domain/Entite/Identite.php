@@ -19,8 +19,8 @@ namespace PhpCleanCode\Domain\Entite;
  */
 final class Identite
 {
-    private int $id;
-    private string $nom;
+    private $id;
+    private $nom;
 
     public function __construct(int $id, string $nom)
     {

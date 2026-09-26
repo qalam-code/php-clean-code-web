@@ -19,11 +19,11 @@ namespace PhpCleanCode\Http;
  */
 final class Requete
 {
-    private string $methode;
-    private string $chemin;
-    private array $corps;
-    private array $requeteUrl;
-    private array $entetes;
+    private $methode;
+    private $chemin;
+    private $corps;
+    private $requeteUrl;
+    private $entetes;
 
     public function __construct(
         string $methode,
@@ -107,8 +107,7 @@ final class Requete
         return $absents;
     }
 
-    public function entete(string $nom): ?string
-    {
+    public function entete(string $nom){
         return $this->entetes[strtolower($nom)] ?? null;
     }
 

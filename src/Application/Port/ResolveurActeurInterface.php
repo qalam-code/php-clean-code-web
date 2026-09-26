@@ -25,7 +25,7 @@ interface ResolveurActeurInterface
      * @param array<string,mixed> $charge charge utile du jeton, deja verifiee.
      * @return Identite|null null si personne ne correspond plus.
      */
-    public function resoudre(array $charge): ?Identite;
+    public function resoudre(array $charge);
 }
 
 

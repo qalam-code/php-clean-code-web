@@ -26,10 +26,10 @@ use PhpCleanCode\Http\Requete;
  */
 final class Authentificateur implements AuthentificationInterface
 {
-    private Requete $requete;
-    private JetonInterface $jetons;
-    private ResolveurActeurInterface $resolveur;
-    private ?Identite $identite = null;
+    private $requete;
+    private $jetons;
+    private $resolveur;
+    private $identite = null;
 
     public function __construct(
         Requete $requete,

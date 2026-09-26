@@ -28,12 +28,12 @@ n'empêche d'ajouter PHPUnit à côté.
 ```php
 final class Verificateur
 {
-    public function section(string $titre): void;
-    public function egal($attendu, $obtenu, string $libelle): void;
-    public function vrai($valeur, string $libelle): void;
+    public function section(string $titre);
+    public function egal($attendu, $obtenu, string $libelle);
+    public function vrai($valeur, string $libelle);
     public function reponseEgale(int $codeAttendu, array $corpsAttendu,
-                                 ReponseHttp $obtenue, string $libelle): void;
-    public function leve(string $typeAttendu, callable $appel, string $libelle): void;
+                                 ReponseHttp $obtenue, string $libelle);
+    public function leve(string $typeAttendu, callable $appel, string $libelle);
     public function bilan(): int;   // 0 si tout est conforme, 1 sinon
 }
 ```
@@ -130,12 +130,12 @@ utilisable dans un script** : `exit($v->bilan())`.
 ```php
 final class JournalFactice implements JournalInterface
 {
-    public array $traces = [];
-    public bool  $reussit = true;
+    public  $traces = [];
+    public   $reussit = true;
 
     public function enregistrer(int $acteurId, string $action, string $detail = ''): bool;
     public function compte(): int;
-    public function derniere(): ?array;
+    public function derniere();
 }
 ```
 
@@ -157,7 +157,7 @@ final class SurveillanceFactice implements SurveillanceInterface
 {
     public function __construct(int $etapes = PHP_INT_MAX, float $ecoule = 0.0);
     public static function epuiserApres(int $etapes): self;
-    public int $consultations = 0;
+    public  $consultations = 0;
 }
 ```
 
@@ -182,7 +182,7 @@ final class AuthentificationFactice implements AuthentificationInterface
 {
     public static function acteur(int $id, string $nom = 'test'): self;
     public static function refuse(string $type = ErreurMetier::JETON_ABSENT): self;
-    public int $appels = 0;
+    public  $appels = 0;
 }
 ```
 
@@ -211,7 +211,7 @@ la lecture.
 ```php
 final class JetonFactice implements JetonInterface
 {
-    public ?string $refuseAvec = null;   // un type d'ErreurMetier
+    public  $refuseAvec = null;   // un type d'ErreurMetier
 }
 ```
 

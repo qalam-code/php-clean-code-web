@@ -20,12 +20,12 @@ use RuntimeException;
  */
 final class FabriqueConnexion
 {
-    private string $dsn;
-    private string $utilisateur;
-    private string $motDePasse;
-    private array $options;
-    private ?string $base;
-    private ?PDO $pdo = null;
+    private $dsn;
+    private $utilisateur;
+    private $motDePasse;
+    private $options;
+    private $base;
+    private $pdo = null;
 
     /**
      * @param string|null $base si fournie, un "USE `base`" explicite est
@@ -40,7 +40,7 @@ final class FabriqueConnexion
         string $dsn,
         string $utilisateur,
         string $motDePasse,
-        ?string $base = null,
+        $base = null,
         array $options = []
     ) {
         $this->dsn         = $dsn;

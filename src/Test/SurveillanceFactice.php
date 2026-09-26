@@ -19,9 +19,9 @@ use PhpCleanCode\Application\Port\SurveillanceInterface;
  */
 final class SurveillanceFactice implements SurveillanceInterface
 {
-    private int $restantes;
-    private float $ecoule;
-    public int $consultations = 0;
+    private $restantes;
+    private $ecoule;
+    public $consultations = 0;
 
     /** @param int $etapes nombre d'appels a tempsRestant() qui repondront true. */
     public function __construct(int $etapes = PHP_INT_MAX, float $ecoule = 0.0)

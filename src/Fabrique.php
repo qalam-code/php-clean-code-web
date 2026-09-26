@@ -39,10 +39,10 @@ use PhpCleanCode\Infrastructure\SurveillanceTimeout;
  */
 abstract class Fabrique
 {
-    private Requete $requete;
-    private ?FabriqueConnexion $connexion = null;
+    private $requete;
+    private $connexion = null;
     /** @var array<string,mixed> */
-    private array $partages = [];
+    private $partages = [];
 
     public function __construct(Requete $requete)
     {

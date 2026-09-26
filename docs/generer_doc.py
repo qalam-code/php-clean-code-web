@@ -428,7 +428,7 @@ def page_de_garde(doc):
 
     for ligne, taille in (
         (ORGANISATION, 12),
-        ("PHP 7.4 minimum   |   aucune d\u00e9pendance", 10),
+        ("PHP 7.0 minimum   |   aucune d\u00e9pendance", 10),
         ("Version du document " + VERSION + "   |   24 septembre 2026", 10),
     ):
         p = doc.add_paragraph()

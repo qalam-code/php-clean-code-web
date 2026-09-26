@@ -28,10 +28,10 @@ final class Facture
     const PAYEE      = 'payee';
     const ANNULEE    = 'annulee';
 
-    private string $numero;
-    private int $montantCentimes;
-    private string $statut;
-    private string $dateEmission;
+    private $numero;
+    private $montantCentimes;
+    private $statut;
+    private $dateEmission;
 
     public function __construct(
         string $numero,

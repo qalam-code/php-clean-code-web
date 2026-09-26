@@ -22,7 +22,7 @@ use PDOStatement;
  */
 abstract class DepotPdo
 {
-    private FabriqueConnexion $connexion;
+    private $connexion;
 
     public function __construct(FabriqueConnexion $connexion)
     {
@@ -52,8 +52,7 @@ abstract class DepotPdo
      * @param array<string,mixed> $parametres
      * @return array<string,mixed>|null
      */
-    final protected function uneLigne(string $sql, array $parametres = []): ?array
-    {
+    final protected function uneLigne(string $sql, array $parametres = []){
         $ligne = $this->executer($sql, $parametres)->fetch();
         return $ligne === false ? null : $ligne;
     }

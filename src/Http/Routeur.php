@@ -26,8 +26,8 @@ use PhpCleanCode\Presentation\Presentateur\PresentateurAbstrait;
 final class Routeur
 {
     /** @var array<string,array{action:callable,presentateur:callable,methodes:array<int,string>}> */
-    private array $routes = [];
-    private string $base;
+    private $routes = [];
+    private $base;
 
     /**
      * @param string $base prefixe d'installation a retirer du chemin,
@@ -52,7 +52,7 @@ final class Routeur
         callable $action,
         callable $presentateur,
         array $methodes = []
-    ): void {
+    ){
         $cheminNormalise = $this->normaliser($chemin);
         if (array_key_exists($cheminNormalise, $this->routes)) {
             throw new \InvalidArgumentException('Route deja declaree : ' . $cheminNormalise);
@@ -68,8 +68,7 @@ final class Routeur
     /**
      * @return array{action:callable,presentateur:callable,methodes:array<int,string>}|null
      */
-    public function resoudre(string $chemin): ?array
-    {
+    public function resoudre(string $chemin){
         return $this->routes[$this->normaliser($chemin)] ?? null;
     }
 

@@ -24,8 +24,8 @@ use PhpCleanCode\Domain\ErreurMetier;
  */
 final class ConsulterFacture
 {
-    private AuthentificationInterface $authentification;
-    private DepotFactureInterface $factures;
+    private $authentification;
+    private $factures;
 
     public function __construct(
         AuthentificationInterface $authentification,

@@ -1,6 +1,6 @@
 # 6. La racine de composition
 
-`src/Fabrique.php` — **un fichier**, et probablement le plus important du socle.
+`src/Fabrique.php` � **un fichier**, et probablement le plus important du socle.
 
 ---
 
@@ -25,39 +25,39 @@ abstract class Fabrique
 }
 ```
 
-**Rôle** — L'endroit où les implémentations concrètes sont assemblées et reliées aux contrats de l'application. Les objets simples de valeur peuvent être construits ailleurs ; les dépendances d'infrastructure restent câblées à cette frontière.
+**R�le** � L'endroit o� les impl�mentations concr�tes sont assembl�es et reli�es aux contrats de l'application. Les objets simples de valeur peuvent �tre construits ailleurs ; les d�pendances d'infrastructure restent c�bl�es � cette fronti�re.
 
 ---
 
 ## 6.2 Pourquoi concentrer toutes les instanciations
 
-Dans les cas d'usage et le domaine, une classe **reçoit** ses dépendances et ne fabrique pas ses adaptateurs d'infrastructure.
-Cette discipline a un coût d'écriture — cette classe grossit — et un bénéfice
+Dans les cas d'usage et le domaine, une classe **re�oit** ses d�pendances et ne fabrique pas ses adaptateurs d'infrastructure.
+Cette discipline a un co�t d'�criture � cette classe grossit � et un b�n�fice
 qu'aucune autre technique ne donne : tout le reste du code devient testable sans
-base, sans réseau et sans serveur, parce qu'il suffit de lui passer autre chose.
+base, sans r�seau et sans serveur, parce qu'il suffit de lui passer autre chose.
 
-**Lisez cette classe comme le plan du système.** Qui dépend de qui y est écrit
+**Lisez cette classe comme le plan du syst�me.** Qui d�pend de qui y est �crit
 noir sur blanc, en un seul fichier. Sur un projet repris, c'est le premier
-fichier à ouvrir : il dit quels endpoints existent, quel cas d'usage répond à
-chacun, et de quoi ce cas d'usage dépend.
+fichier � ouvrir : il dit quels endpoints existent, quel cas d'usage r�pond �
+chacun, et de quoi ce cas d'usage d�pend.
 
 ---
 
-## 6.3 Deux règles à ne pas enfreindre
+## 6.3 Deux r�gles � ne pas enfreindre
 
-**1. Rien ici n'ouvre de connexion ni n'appelle le réseau.** On assemble des
+**1. Rien ici n'ouvre de connexion ni n'appelle le r�seau.** On assemble des
 objets, on ne travaille pas. `FabriqueConnexion` et `AuthentificationDifferee`
 existent pour cela.
 
-> **⚠** Le jour où la fabrique ouvre la base pour se construire, un endpoint qui
-> devait répondre « paramètre manquant » répond « erreur interne » dès que la
+> **?** Le jour o� la fabrique ouvre la base pour se construire, un endpoint qui
+> devait r�pondre � param�tre manquant � r�pond � erreur interne � d�s que la
 > base est indisponible.
 
-**2. Aucun cas d'usage n'instancie d'infrastructure.** Le jour où un dépôt fait
-`new PDO` dans un coin, la racine de composition ment — et le test qui croyait
-travailler en mémoire attaque la base de production.
+**2. Aucun cas d'usage n'instancie d'infrastructure.** Le jour o� un d�p�t fait
+`new PDO` dans un coin, la racine de composition ment � et le test qui croyait
+travailler en m�moire attaque la base de production.
 
-Ce point se vérifie mécaniquement :
+Ce point se v�rifie m�caniquement :
 
 ```bash
 grep -rn "new PDO\|new .*Pdo(" src/ --include="*.php" | grep -v Fabrique
@@ -65,7 +65,7 @@ grep -rn "new PDO\|new .*Pdo(" src/ --include="*.php" | grep -v Fabrique
 
 ---
 
-## 6.4 `partage()` : mémoïsation
+## 6.4 `partage()` : m�mo�sation
 
 ```php
 private function utilisateurs(): DepotUtilisateurInterface
@@ -76,15 +76,15 @@ private function utilisateurs(): DepotUtilisateurInterface
 }
 ```
 
-Deux cas d'usage câblés dans la même requête partagent alors le même dépôt, donc
-la même connexion — et non deux.
+Deux cas d'usage c�bl�s dans la m�me requ�te partagent alors le m�me d�p�t, donc
+la m�me connexion � et non deux.
 
-**La clé est une chaîne libre**, mais elle doit être unique : deux services
-partageant la même clé se substituent silencieusement l'un à l'autre. Prenez le
-nom de la méthode.
+**La cl� est une cha�ne libre**, mais elle doit �tre unique : deux services
+partageant la m�me cl� se substituent silencieusement l'un � l'autre. Prenez le
+nom de la m�thode.
 
-**`array_key_exists` plutôt que `isset`** : un service qui vaudrait légitimement
-`null` serait sinon reconstruit à chaque appel.
+**`array_key_exists` plut�t que `isset`** : un service qui vaudrait l�gitimement
+`null` serait sinon reconstruit � chaque appel.
 
 ---
 
@@ -102,18 +102,18 @@ final public function connexion(): FabriqueConnexion
 
 Deux niveaux de paresse se superposent, et c'est voulu :
 
-1. `decrireConnexion()` n'est appelée qu'au premier `connexion()` — l'objet
-   décrivant la connexion n'est même pas construit tant qu'aucun dépôt n'est
-   câblé ;
-2. `FabriqueConnexion::pdo()` n'ouvre la socket qu'à la première requête SQL
-   réellement exécutée.
+1. `decrireConnexion()` n'est appel�e qu'au premier `connexion()` � l'objet
+   d�crivant la connexion n'est m�me pas construit tant qu'aucun d�p�t n'est
+   c�bl� ;
+2. `FabriqueConnexion::pdo()` n'ouvre la socket qu'� la premi�re requ�te SQL
+   r�ellement ex�cut�e.
 
-Résultat : un endpoint qui refuse une requête malformée ne touche jamais la
+R�sultat : un endpoint qui refuse une requ�te malform�e ne touche jamais la
 base.
 
 ---
 
-## 6.6 `surveillance()` : réglée sur la configuration du serveur
+## 6.6 `surveillance()` : r�gl�e sur la configuration du serveur
 
 ```php
 public function surveillance(): SurveillanceInterface
@@ -125,23 +125,23 @@ public function surveillance(): SurveillanceInterface
 }
 ```
 
-`max_execution_time` vaut `0` en CLI (pas de limite) : le repli à 30 secondes
-évite qu'un script en ligne de commande croie avoir un budget infini alors que
-le même code tournera sous Apache avec une limite réelle.
+`max_execution_time` vaut `0` en CLI (pas de limite) : le repli � 30 secondes
+�vite qu'un script en ligne de commande croie avoir un budget infini alors que
+le m�me code tournera sous Apache avec une limite r�elle.
 
-Redéfinissez cette méthode si la marge de cinq secondes ne convient pas à votre
-étape la plus longue.
+Red�finissez cette m�thode si la marge de cinq secondes ne convient pas � votre
+�tape la plus longue.
 
 ---
 
-## 6.7 Écrire sa fabrique
+## 6.7 �crire sa fabrique
 
 Le squelette en donne un exemple complet. La structure :
 
 ```php
 final class Fabrique extends FabriqueBase
 {
-    // 1. Les routes — la carte de l'application
+    // 1. Les routes � la carte de l'application
     public function routeur(): Routeur
     {
         $routeur = new Routeur((string) (getenv('BASE_URI') ?: ''));
@@ -156,7 +156,7 @@ final class Fabrique extends FabriqueBase
         return $routeur;
     }
 
-    // 2. La connexion — décrite, pas ouverte
+    // 2. La connexion � d�crite, pas ouverte
     protected function decrireConnexion(): FabriqueConnexion
     {
         $base = (string) (getenv('DB_BASE') ?: 'exemple');
@@ -164,17 +164,17 @@ final class Fabrique extends FabriqueBase
             'mysql:host=' . (getenv('DB_HOTE') ?: '127.0.0.1') . ';dbname=' . $base . ';charset=utf8mb4',
             (string) getenv('DB_UTILISATEUR'),
             (string) getenv('DB_MOT_DE_PASSE'),
-            $base                                  // ← le USE explicite
+            $base                                  // ? le USE explicite
         );
     }
 
-    // 3. Les cas d'usage — non mémoïsés : un par requête suffit
+    // 3. Les cas d'usage � non m�mo�s�s : un par requ�te suffit
     private function consulterFacture(): ConsulterFacture
     {
         return new ConsulterFacture($this->authentification(), $this->factures());
     }
 
-    // 4. Les services — mémoïsés
+    // 4. Les services � m�mo�s�s
     private function factures(): DepotFactureInterface
     {
         return $this->partage('factures', function () {
@@ -184,14 +184,14 @@ final class Fabrique extends FabriqueBase
 }
 ```
 
-**Cas d'usage non mémoïsés, services mémoïsés.** Un cas d'usage est bon marché et
-sans état ; un dépôt porte la connexion, il doit être unique.
+**Cas d'usage non m�mo�s�s, services m�mo�s�s.** Un cas d'usage est bon march� et
+sans �tat ; un d�p�t porte la connexion, il doit �tre unique.
 
 ---
 
 ## 6.8 La configuration
 
-**Elle vient de l'environnement**, pas d'un fichier versionné :
+**Elle vient de l'environnement**, pas d'un fichier versionn� :
 
 ```apache
 SetEnv JWT_SECRET        une-valeur-aleatoire-longue
@@ -202,7 +202,7 @@ SetEnv DB_MOT_DE_PASSE   ...
 SetEnv BASE_URI          /exemple
 ```
 
-> **⚠ Pas de secret par défaut.** Le squelette lève une exception si
+> **? Pas de secret par d�faut.** Le squelette l�ve une exception si
 > `JWT_SECRET` est absent :
 >
 > ```php
@@ -211,11 +211,11 @@ SetEnv BASE_URI          /exemple
 > }
 > ```
 >
-> Une valeur de repli — `secret`, `changeme`, `SECRET` — finit toujours en
+> Une valeur de repli � `secret`, `changeme`, `SECRET` � finit toujours en
 > production, et alors n'importe qui peut forger un jeton valide pour n'importe
-> quel compte. **Mieux vaut refuser de démarrer.**
+> quel compte. **Mieux vaut refuser de d�marrer.**
 
-Pour les autres réglages (hôte, nom de base), un repli est acceptable : une
-mauvaise valeur se manifeste immédiatement par une erreur de connexion, pas par
+Pour les autres r�glages (h�te, nom de base), un repli est acceptable : une
+mauvaise valeur se manifeste imm�diatement par une erreur de connexion, pas par
 une faille silencieuse.
 

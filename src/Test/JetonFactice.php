@@ -20,7 +20,7 @@ use PhpCleanCode\Domain\ErreurMetier;
 final class JetonFactice implements JetonInterface
 {
     /** Mettre a un type d'ErreurMetier pour faire echouer toute verification. */
-    public ?string $refuseAvec = null;
+    public $refuseAvec = null;
 
     public function emettre(array $charge, int $dureeSecondes): string
     {

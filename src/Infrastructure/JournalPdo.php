@@ -22,7 +22,7 @@ use Throwable;
  */
 final class JournalPdo extends DepotPdo implements JournalInterface
 {
-    private string $table;
+    private $table;
 
     public function __construct(FabriqueConnexion $connexion, string $table = 'journal')
     {

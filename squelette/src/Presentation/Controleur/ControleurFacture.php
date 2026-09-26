@@ -15,8 +15,8 @@ use PhpCleanCode\Presentation\ReponseHttp;
  */
 final class ControleurFacture
 {
-    private ConsulterFacture $consulter;
-    private PresentateurFacture $presentateur;
+    private $consulter;
+    private $presentateur;
 
     public function __construct(ConsulterFacture $consulter, PresentateurFacture $presentateur)
     {

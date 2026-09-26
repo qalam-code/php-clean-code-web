@@ -26,7 +26,7 @@ final class ReponseHttp
     public function corps(): array;
     public function entetes(): array;
     public function json(): string;
-    public function envoyer(): void;
+    public function envoyer();
 }
 ```
 
@@ -44,7 +44,7 @@ une sortie ni analyser du JSON. C'est ce qui permet de vérifier un contrat d'AP
 
 **`json()`** encode avec `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`.
 Sans le premier, « réglée » part en séquences `\uXXXX`, illisibles dans les
-journaux comme en débogage. Les octets UTF-8 invalides sont remplacés et les
+journaux comme en débogage. À partir de PHP 7.2, les octets UTF-8 invalides sont remplacés ; sous PHP 7.0 et 7.1, la valeur concernée devient `null`. Les
 valeurs qui ne peuvent pas être encodées (par exemple une référence circulaire)
 sont rendues partiellement pour éviter un corps vide ou un JSON invalide.
 

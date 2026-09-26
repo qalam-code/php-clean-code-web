@@ -29,13 +29,12 @@ use Throwable;
  */
 final class Verificateur
 {
-    private int $ok = 0;
-    private int $ko = 0;
+    private $ok = 0;
+    private $ko = 0;
     /** @var array<int,string> */
-    private array $echecs = [];
+    private $echecs = [];
 
-    public function section(string $titre): void
-    {
+    public function section(string $titre){
         echo PHP_EOL . $titre . PHP_EOL . str_repeat('-', 72) . PHP_EOL;
     }
 
@@ -47,8 +46,7 @@ final class Verificateur
      * @param mixed $attendu
      * @param mixed $obtenu
      */
-    public function egal($attendu, $obtenu, string $libelle): void
-    {
+    public function egal($attendu, $obtenu, string $libelle){
         if ($attendu === $obtenu) {
             $this->reussite($libelle);
             return;
@@ -57,8 +55,7 @@ final class Verificateur
     }
 
     /** @param mixed $valeur */
-    public function vrai($valeur, string $libelle): void
-    {
+    public function vrai($valeur, string $libelle){
         $this->egal(true, $valeur === true, $libelle);
     }
 
@@ -76,7 +73,7 @@ final class Verificateur
         array $corpsAttendu,
         ReponseHttp $obtenue,
         string $libelle
-    ): void {
+    ){
         $this->egal($codeAttendu, $obtenue->code(), $libelle . ' -- code HTTP');
         $this->egal(
             array_keys($corpsAttendu),
@@ -95,8 +92,7 @@ final class Verificateur
      *
      * @param callable(): mixed $appel
      */
-    public function leve(string $typeAttendu, callable $appel, string $libelle): void
-    {
+    public function leve(string $typeAttendu, callable $appel, string $libelle){
         try {
             $appel();
         } catch (ErreurMetier $e) {
@@ -121,14 +117,12 @@ final class Verificateur
         return $this->ko > 0 ? 1 : 0;
     }
 
-    private function reussite(string $libelle): void
-    {
+    private function reussite(string $libelle){
         $this->ok++;
         echo '  OK     ' . $libelle . PHP_EOL;
     }
 
-    private function echec(string $libelle, string $attendu, string $obtenu): void
-    {
+    private function echec(string $libelle, string $attendu, string $obtenu){
         $this->ko++;
         $this->echecs[] = $libelle;
         echo '  ECHEC  ' . $libelle . PHP_EOL;

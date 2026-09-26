@@ -51,7 +51,7 @@ class ErreurMetier extends Exception
     const ACTEUR_INTROUVABLE     = 'acteur_introuvable';
     const ECHEC_JOURNALISATION   = 'echec_journalisation';
 
-    private string $type;
+    private $type;
 
     /**
      * PUBLIC PAR OBLIGATION, PAS PAR INTENTION.

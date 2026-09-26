@@ -23,7 +23,7 @@ use PhpCleanCode\Domain\Contrat\DepotInterface;
 interface DepotFactureInterface extends DepotInterface
 {
     /** @return Facture|null null si aucune facture ne porte ce numero. */
-    public function trouverParNumero(string $numero): ?Facture;
+    public function trouverParNumero(string $numero);
 
     /** @return array<int,Facture> */
     public function impayeesDe(int $abonneId): array;

@@ -25,10 +25,10 @@ use PhpCleanCode\Application\Port\JournalInterface;
 final class JournalFactice implements JournalInterface
 {
     /** @var array<int,array{acteur:int,action:string,detail:string}> */
-    public array $traces = [];
+    public $traces = [];
 
     /** Mettre a false pour simuler une table pleine ou verrouillee. */
-    public bool $reussit = true;
+    public $reussit = true;
 
     public function enregistrer(int $acteurId, string $action, string $detail = ''): bool
     {
@@ -44,8 +44,7 @@ final class JournalFactice implements JournalInterface
         return count($this->traces);
     }
 
-    public function derniere(): ?array
-    {
+    public function derniere(){
         return $this->traces === [] ? null : $this->traces[count($this->traces) - 1];
     }
 }

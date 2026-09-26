@@ -104,7 +104,7 @@ quelle version pour avoir une chance de dire ce qui ne va pas.
 
 ```bash
 # Unix
-outils/lint.sh php7.4 src PhpCleanCode 7.4
+outils/lint.sh php7.0 src PhpCleanCode 7.0
 
 # Windows
 outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\Paiement 7.0

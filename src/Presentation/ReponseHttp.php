@@ -19,9 +19,9 @@ namespace PhpCleanCode\Presentation;
  */
 final class ReponseHttp
 {
-    private int $code;
-    private array $corps;
-    private array $entetes;
+    private $code;
+    private $corps;
+    private $entetes;
 
     /**
      * @param array<string,mixed> $corps
@@ -55,13 +55,15 @@ final class ReponseHttp
     {
         // JSON_UNESCAPED_UNICODE : sans lui, "reglee" accentue part en
         // sequences \uXXXX, illisibles dans les journaux comme en debogage.
-        return (string) json_encode(
-            $this->corps,
-            JSON_UNESCAPED_UNICODE
-                | JSON_UNESCAPED_SLASHES
-                | JSON_INVALID_UTF8_SUBSTITUTE
-                | JSON_PARTIAL_OUTPUT_ON_ERROR
-        );
+        $options = JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_PARTIAL_OUTPUT_ON_ERROR;
+        // Disponible a partir de PHP 7.2. Sous PHP 7.0, le mode partiel
+        // conserve un JSON valide en remplaçant une valeur fautive par null.
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $options |= constant('JSON_INVALID_UTF8_SUBSTITUTE');
+        }
+        return (string) json_encode($this->corps, $options);
     }
 
     /**
@@ -69,8 +71,7 @@ final class ReponseHttp
      * des objets ; un cas d'usage ou un depot qui fait echo est un cas
      * d'usage qu'on ne pourra plus tester.
      */
-    public function envoyer(): void
-    {
+    public function envoyer(){
         if (!headers_sent()) {
             http_response_code($this->code);
             header('Content-Type: application/json; charset=utf-8');

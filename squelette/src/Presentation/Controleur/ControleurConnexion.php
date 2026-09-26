@@ -24,8 +24,8 @@ use PhpCleanCode\Presentation\ReponseHttp;
  */
 final class ControleurConnexion
 {
-    private Connecter $connecter;
-    private PresentateurConnexion $presentateur;
+    private $connecter;
+    private $presentateur;
 
     public function __construct(Connecter $connecter, PresentateurConnexion $presentateur)
     {

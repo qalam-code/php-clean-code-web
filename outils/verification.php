@@ -117,17 +117,16 @@ $v->vrai($chargeRefusee, 'une charge non serialisable ne produit pas un jeton vi
 $v->section('Authentificateur');
 
 $resolveur = new class implements ResolveurActeurInterface {
-    public bool $connu = true;
-    public int $appels = 0;
+    public $connu = true;
+    public $appels = 0;
 
-    public function resoudre(array $charge): ?Identite
-    {
+    public function resoudre(array $charge){
         $this->appels++;
         return $this->connu ? new Identite((int) $charge['sub'], 'test') : null;
     }
 };
 
-$avec = function (?string $entete) use ($jwt, $resolveur) {
+$avec = function ($entete) use ($jwt, $resolveur) {
     $entetes = $entete === null ? [] : ['Authorization' => $entete];
     return new Authentificateur(new Requete('GET', '/x', [], [], $entetes), $jwt, $resolveur);
 };
@@ -224,8 +223,11 @@ $v->egal(
     'accents rendus tels quels, pas en \\uXXXX'
 );
 $jsonUtf8Invalide = (new ReponseHttp(200, ['texte' => "\xB1"]))->json();
+$texteUtf8Attendu = defined('JSON_INVALID_UTF8_SUBSTITUTE')
+    ? ['texte' => "\xEF\xBF\xBD"]
+    : ['texte' => null];
 $v->egal(
-    ['texte' => "\xEF\xBF\xBD"],
+    $texteUtf8Attendu,
     json_decode($jsonUtf8Invalide, true),
     'octets UTF-8 invalides remplaces pour garder un JSON valide'
 );

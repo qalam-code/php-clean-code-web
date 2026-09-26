@@ -4,7 +4,7 @@ Socle Clean Architecture pour API PHP : la plomberie qui se repete d'un projet
 a l'autre — HTTP, persistance, erreurs, authentification — plus le harnais de
 tests qui va avec.
 
-**PHP 7.4 minimum. Aucune dependance** : ni Composer, ni bibliotheque tierce.
+**PHP 7.0 minimum. Aucune dependance** : ni Composer, ni bibliotheque tierce.
 Seules les extensions `json` et `pdo` sont requises.
 
 Ce qui n'est **pas** ici : votre domaine et vos cas d'usage. Ils sont propres a
@@ -137,8 +137,8 @@ python docs/generer_doc.py docs/ docs/Documentation_phpCleanCode.docx
 php squelette/tests/architecture/equivalence.php
 
 # Syntaxe + liaison des classes, sous une version precise
-outils/lint.sh php7.4 src PhpCleanCode 7.4
-outils\lint.bat C:\wamp64\bin\php\php7.4.33\php.exe src PhpCleanCode 7.4
+outils/lint.sh php7.0 src PhpCleanCode 7.0
+outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src PhpCleanCode 7.0
 
 # Sur un projet bati avec le socle
 outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe ..\mon-projet\src App\MonProjet 7.0

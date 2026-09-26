@@ -20,13 +20,15 @@ use PhpCleanCode\Application\Port\SurveillanceInterface;
  */
 final class SurveillanceTimeout implements SurveillanceInterface
 {
-    private int $depart;
-    private float $limite;
-    private float $marge;
+    private $depart;
+    private $limite;
+    private $marge;
+    private $horlogeMonotone;
 
     public function __construct(float $limiteSecondes = 25.0, float $margeSecondes = 5.0)
     {
-        $this->depart = hrtime(true);
+        $this->horlogeMonotone = function_exists('hrtime');
+        $this->depart = $this->horlogeMonotone ? hrtime(true) : microtime(true);
         $this->limite = $limiteSecondes;
         $this->marge  = $margeSecondes;
     }
@@ -38,7 +40,10 @@ final class SurveillanceTimeout implements SurveillanceInterface
 
     public function ecoule(): float
     {
-        return (hrtime(true) - $this->depart) / 1000000000;
+        if ($this->horlogeMonotone) {
+            return (hrtime(true) - $this->depart) / 1000000000;
+        }
+        return microtime(true) - $this->depart;
     }
 }
 

@@ -4,7 +4,7 @@
 #   outils/lint.sh [php] [racine-src] [prefixe-namespace] [version]
 #
 # Exemple :
-#   outils/lint.sh php7.4 src App\\Exemple 7.4
+#   outils/lint.sh php7.0 src App\\Exemple 7.0
 #
 # VERIFIEZ LA VERSION AFFICHEE. Lancer ce script avec une version plus
 # recente que celle de production ne prouve rien.

@@ -22,8 +22,7 @@ use PhpCleanCode\Infrastructure\DepotPdo;
  */
 final class DepotFacturePdo extends DepotPdo implements DepotFactureInterface
 {
-    public function trouverParNumero(string $numero): ?Facture
-    {
+    public function trouverParNumero(string $numero){
         $ligne = $this->uneLigne(
             'SELECT numero, montant_centimes, statut, date_emission'
             . ' FROM factures WHERE numero = :numero LIMIT 1',
