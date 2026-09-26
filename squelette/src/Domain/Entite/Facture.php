@@ -42,6 +42,16 @@ final class Facture
         if ($numero === '') {
             throw new \InvalidArgumentException('Facture : numero vide');
         }
+        if ($montantCentimes < 0) {
+            throw new \InvalidArgumentException('Facture : montant negatif');
+        }
+        if (!in_array($statut, [self::EN_ATTENTE, self::PAYEE, self::ANNULEE], true)) {
+            throw new \InvalidArgumentException('Facture : statut inconnu');
+        }
+        $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $dateEmission);
+        if ($date === false || $date->format('Y-m-d') !== $dateEmission) {
+            throw new \InvalidArgumentException('Facture : date d emission invalide');
+        }
         $this->numero          = $numero;
         $this->montantCentimes = $montantCentimes;
         $this->statut          = $statut;

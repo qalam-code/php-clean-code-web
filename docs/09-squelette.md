@@ -133,9 +133,10 @@ deux tables en une entité, sans toucher aux cas d'usage.
 sera posée par le paiement, par la relance et par l'export ; une seule réponse,
 ici, au lieu de trois `if` qui finiront par diverger.
 
-**L'invariant se défend dans le constructeur** : une facture ne peut pas exister
-sans numéro. Mieux vaut échouer à la construire que la promener à moitié remplie
-dans toute l'application.
+**Les invariants se défendent dans le constructeur** : une facture ne peut pas
+exister sans numéro, avec un montant négatif, un statut inconnu ou une date
+invalide au format `AAAA-MM-JJ`. Mieux vaut échouer à la construire que la
+promener à moitié remplie dans toute l'application.
 
 ---
 

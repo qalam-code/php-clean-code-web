@@ -53,15 +53,22 @@ $v->vrai($facture->estPayable(), 'une facture en attente est payable');
 $payee = new Facture('F-2026-002', 1000, Facture::PAYEE, '2026-09-02');
 $v->egal(false, $payee->estPayable(), 'une facture payee ne l est plus');
 
-// leve() ne guette que les ErreurMetier ; un invariant d'entite se defend
-// avec une exception de PHP, qu'on attrape donc a la main.
-$refuse = false;
-try {
-    new Facture('', 0, Facture::EN_ATTENTE, '2026-09-01');
-} catch (InvalidArgumentException $e) {
-    $refuse = true;
+// Les invariants d'entite se defendent avec une exception de PHP.
+$facturesInvalides = [
+    ['', 0, Facture::EN_ATTENTE, '2026-09-01', 'un numero vide'],
+    ['F-NEGATIVE', -1, Facture::EN_ATTENTE, '2026-09-01', 'un montant negatif'],
+    ['F-STATUT', 100, 'inconnu', '2026-09-01', 'un statut inconnu'],
+    ['F-DATE', 100, Facture::EN_ATTENTE, '2026-02-31', 'une date impossible'],
+];
+foreach ($facturesInvalides as $cas) {
+    $refuse = false;
+    try {
+        new Facture($cas[0], $cas[1], $cas[2], $cas[3]);
+    } catch (InvalidArgumentException $e) {
+        $refuse = true;
+    }
+    $v->vrai($refuse, $cas[4] . ' est refuse a la construction');
 }
-$v->vrai($refuse, 'un numero vide est refuse a la construction');
 
 // ---------------------------------------------------------------------------
 $v->section('2. Cas d usage');

@@ -133,7 +133,7 @@ php outils/verification.php
 # Regenerer la documentation Word depuis les fichiers Markdown
 python docs/generer_doc.py docs/ docs/Documentation_phpCleanCode.docx
 
-# Suite d'equivalence du squelette (43 controles)
+# Suite d'equivalence du squelette (53 controles)
 php squelette/tests/architecture/equivalence.php
 
 # Syntaxe + liaison des classes, sous une version precise
