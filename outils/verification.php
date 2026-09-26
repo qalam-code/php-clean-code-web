@@ -105,6 +105,14 @@ try {
 }
 $v->vrai($refuseSecretVide, 'un secret vide fait echouer la construction');
 
+$chargeRefusee = false;
+try {
+    $jwt->emettre(['texte' => "\xB1"], 3600);
+} catch (InvalidArgumentException $e) {
+    $chargeRefusee = true;
+}
+$v->vrai($chargeRefusee, 'une charge non serialisable ne produit pas un jeton vide');
+
 // ---------------------------------------------------------------------------
 $v->section('Authentificateur');
 

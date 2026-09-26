@@ -48,8 +48,14 @@ final class JetonJwt implements JetonInterface
         $charge['iat'] = $maintenant;
         $charge['exp'] = $maintenant + $dureeSecondes;
 
-        $entete = $this->encoder((string) json_encode(['typ' => 'JWT', 'alg' => 'HS256']));
-        $corps  = $this->encoder((string) json_encode($charge));
+        $enteteJson = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+        $corpsJson  = json_encode($charge);
+        if ($enteteJson === false || $corpsJson === false) {
+            throw new \InvalidArgumentException('charge du jeton non serialisable');
+        }
+
+        $entete = $this->encoder($enteteJson);
+        $corps  = $this->encoder($corpsJson);
 
         return $entete . '.' . $corps . '.' . $this->signer($entete . '.' . $corps);
     }

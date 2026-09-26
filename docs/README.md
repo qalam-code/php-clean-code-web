@@ -84,6 +84,6 @@ champs ».
 - Outils (`compat.php`, harnais de caractérisation) : écrits en **PHP 7.0
   strict**, pour pouvoir tourner sur la production la plus ancienne.
 - Cette documentation décrit l'état du **26/09/2026** : 27 types dans `src/`,
-  40 contrôles d'auto-test (42 avec PDO SQLite), 50 contrôles d'équivalence
+  41 contrôles d'auto-test (43 avec PDO SQLite), 50 contrôles d'équivalence
   sur le squelette.
 
