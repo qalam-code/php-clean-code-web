@@ -42,9 +42,11 @@ une sortie ni analyser du JSON. C'est ce qui permet de vérifier un contrat d'AP
 > clés : ne le changez pas en réorganisant du code. `Verificateur::reponseEgale()`
 > le surveille explicitement. Voir [`11-pieges.md`](11-pieges.md), piège n° 7.
 
-**`json()`** encode avec `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`. Sans
-le premier, « réglée » part en séquences `\uXXXX`, illisibles dans les journaux
-comme en débogage.
+**`json()`** encode avec `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`.
+Sans le premier, « réglée » part en séquences `\uXXXX`, illisibles dans les
+journaux comme en débogage. Les octets UTF-8 invalides sont remplacés et les
+valeurs qui ne peuvent pas être encodées (par exemple une référence circulaire)
+sont rendues partiellement pour éviter un corps vide ou un JSON invalide.
 
 **`envoyer()` est le seul endroit du code qui écrit sur la sortie.** Tout le
 reste retourne des objets ; un cas d'usage ou un dépôt qui fait `echo` est un cas

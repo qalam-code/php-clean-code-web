@@ -215,6 +215,19 @@ $v->egal(
     (new ReponseHttp(200, ['v' => "r\xc3\xa9gl\xc3\xa9e"]))->json(),
     'accents rendus tels quels, pas en \\uXXXX'
 );
+$jsonUtf8Invalide = (new ReponseHttp(200, ['texte' => "\xB1"]))->json();
+$v->egal(
+    ['texte' => "\xEF\xBF\xBD"],
+    json_decode($jsonUtf8Invalide, true),
+    'octets UTF-8 invalides remplaces pour garder un JSON valide'
+);
+$corpsCirculaire = [];
+$corpsCirculaire['soi'] = &$corpsCirculaire;
+$v->egal(
+    ['soi' => null],
+    json_decode((new ReponseHttp(200, $corpsCirculaire))->json(), true),
+    'reference circulaire rendue partiellement en JSON valide'
+);
 
 $journal = new JournalFactice();
 $journal->reussit = false;
