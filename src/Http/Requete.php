@@ -115,24 +115,33 @@ final class Requete
     /** @return array<string,string> */
     private static function entetesDuServeur(): array
     {
-        // getallheaders() manque sous certaines configurations (php-fpm avec
-        // nginx, CLI), et c'est precisement la qu'Authorization se perd.
+        $entetes = [];
         if (function_exists('getallheaders')) {
-            $entetes = getallheaders();
-            if (is_array($entetes) && $entetes !== []) {
-                return $entetes;
+            $globales = getallheaders();
+            if (is_array($globales)) {
+                $entetes = $globales;
             }
         }
-        $entetes = [];
+
+        // getallheaders() peut etre present tout en omettant Authorization.
+        // On complete donc toujours avec $_SERVER, sans ecraser une valeur
+        // deja fournie par la fonction.
+        $nomsConnus = array_change_key_case($entetes, CASE_LOWER);
         foreach ($_SERVER as $cle => $valeur) {
             if (strpos((string) $cle, 'HTTP_') === 0) {
                 $nom = str_replace('_', '-', substr((string) $cle, 5));
-                $entetes[$nom] = (string) $valeur;
+                $nomNormalise = strtolower($nom);
+                if (!array_key_exists($nomNormalise, $nomsConnus)) {
+                    $entetes[$nom] = (string) $valeur;
+                    $nomsConnus[$nomNormalise] = true;
+                }
             }
         }
         // Apache masque Authorization quand CGIPassAuth est desactive ; la
         // reecriture de .htaccess le remet ici.
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
+            && !array_key_exists('authorization', $nomsConnus)
+        ) {
             $entetes['Authorization'] = (string) $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
         return $entetes;

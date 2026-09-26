@@ -193,6 +193,23 @@ $journal->reussit = false;
 $v->egal(false, $journal->enregistrer(1, 'x'), 'le journal rend false et NE LEVE PAS');
 
 // ---------------------------------------------------------------------------
+$v->section('Requete -- en-tetes serveur');
+
+$serveurOriginal = $_SERVER;
+$_SERVER = [
+    'REQUEST_METHOD' => 'GET',
+    'REQUEST_URI' => '/test',
+    'HTTP_CONTENT_TYPE' => 'application/json',
+    'REDIRECT_HTTP_AUTHORIZATION' => 'Bearer test',
+];
+try {
+    $requeteServeur = Requete::depuisGlobales();
+    $v->egal('Bearer test', $requeteServeur->entete('Authorization'), 'Authorization Apache recupere avec les autres en-tetes');
+} finally {
+    $_SERVER = $serveurOriginal;
+}
+
+// ---------------------------------------------------------------------------
 $v->section('Architecture -- dependances vers l interieur');
 
 $racineSource = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src';
