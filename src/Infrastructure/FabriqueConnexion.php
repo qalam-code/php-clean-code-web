@@ -59,14 +59,21 @@ final class FabriqueConnexion
     {
         if ($this->pdo === null) {
             try {
-                $this->pdo = new PDO($this->dsn, $this->utilisateur, $this->motDePasse, $this->options);
+                $pdo = new PDO($this->dsn, $this->utilisateur, $this->motDePasse, $this->options);
+                if ($this->base !== null) {
+                    $base = str_replace('`', '``', $this->base);
+                    if ($pdo->exec('USE `' . $base . '`') === false) {
+                        throw new RuntimeException('selection de la base impossible');
+                    }
+                }
+                // Ne publier la connexion qu'une fois l'initialisation
+                // completee. Un echec de USE ne doit pas laisser une PDO
+                // utilisable avec la base par defaut du compte.
+                $this->pdo = $pdo;
             } catch (PDOException $e) {
                 // Le message de PDO contient l'hote, le port et parfois
                 // l'utilisateur. Il ne doit jamais remonter au consommateur.
                 throw new RuntimeException('connexion a la base impossible', 0, $e);
-            }
-            if ($this->base !== null) {
-                $this->pdo->exec('USE `' . $this->base . '`');
             }
         }
         return $this->pdo;

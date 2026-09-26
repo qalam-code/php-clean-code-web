@@ -38,7 +38,9 @@ C'est ce qui permet à une requête sans jeton de recevoir « token introuvable 
 même quand la base est morte, au lieu d'une panne générique.
 
 **Le paramètre `$base` est un filet de sécurité.** S'il est fourni, un
-`USE \`base\`` explicite est émis juste après la connexion.
+`USE \`base\`` explicite est émis juste après la connexion. La connexion n'est
+conservée qu'après son succès : un échec ne peut pas laisser réutiliser la base
+par défaut du compte.
 
 > **⚠** Dès qu'une seule requête du projet nomme une table sans préfixer sa
 > base, c'est la base par défaut du compte MySQL qui décide — et une copie de

@@ -164,6 +164,34 @@ $v->egal(1, $construit, 'construit au premier identifier()');
 $connexion = new FabriqueConnexion('mysql:host=255.255.255.255;dbname=neant', 'x', 'y', null);
 $v->egal(false, $connexion->estOuverte(), 'aucune connexion avant le premier pdo()');
 
+if (in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+    $baseInvalide = new FabriqueConnexion('sqlite::memory:', '', '', 'base_inexistante');
+    $echecs = 0;
+    for ($i = 0; $i < 2; $i++) {
+        try {
+            $baseInvalide->pdo();
+        } catch (RuntimeException $e) {
+            $echecs++;
+        }
+    }
+    $v->egal([2, false], [$echecs, $baseInvalide->estOuverte()], 'une base invalide ne conserve jamais la connexion');
+
+    $baseSilencieuse = new FabriqueConnexion(
+        'sqlite::memory:',
+        '',
+        '',
+        'base_inexistante',
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT]
+    );
+    $echecSilencieux = false;
+    try {
+        $baseSilencieuse->pdo();
+    } catch (RuntimeException $e) {
+        $echecSilencieux = true;
+    }
+    $v->egal([true, false], [$echecSilencieux, $baseSilencieuse->estOuverte()], 'un echec PDO silencieux ne valide pas la connexion');
+}
+
 // ---------------------------------------------------------------------------
 $v->section('Surveillance');
 
