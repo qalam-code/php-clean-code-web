@@ -193,6 +193,48 @@ $journal->reussit = false;
 $v->egal(false, $journal->enregistrer(1, 'x'), 'le journal rend false et NE LEVE PAS');
 
 // ---------------------------------------------------------------------------
+$v->section('Architecture -- dependances vers l interieur');
+
+$racineSource = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src';
+$regles = [
+    'Domain' => ['Application', 'Infrastructure', 'Presentation', 'Http'],
+    'Application' => ['Infrastructure', 'Presentation', 'Http'],
+    'Infrastructure' => ['Presentation', 'Http'],
+];
+$violations = [];
+
+foreach ($regles as $couche => $interdites) {
+    $racineCouche = $racineSource . DIRECTORY_SEPARATOR . $couche;
+    if (!is_dir($racineCouche)) {
+        continue;
+    }
+
+    $fichiers = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($racineCouche, FilesystemIterator::SKIP_DOTS)
+    );
+    foreach ($fichiers as $fichier) {
+        if (!$fichier->isFile() || $fichier->getExtension() !== 'php') {
+            continue;
+        }
+        $lignes = file($fichier->getPathname(), FILE_IGNORE_NEW_LINES);
+        foreach ($lignes as $numero => $ligne) {
+            $import = ltrim($ligne);
+            if (strpos($import, 'use PhpCleanCode\\') !== 0) {
+                continue;
+            }
+            $parties = explode('\\', substr($import, strlen('use PhpCleanCode\\')));
+            if (in_array($parties[0], $interdites, true)) {
+                $relatif = substr($fichier->getPathname(), strlen($racineSource) + 1);
+                $violations[] = $couche . '/' . $relatif . ':' . ($numero + 1)
+                    . ' importe ' . $parties[0];
+            }
+        }
+    }
+}
+
+$v->egal([], $violations, 'aucune dependance vers une couche exterieure interdite');
+
+// ---------------------------------------------------------------------------
 $v->section('Aiguillage');
 
 $routeur = new Routeur();

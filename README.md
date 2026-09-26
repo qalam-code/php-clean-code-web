@@ -127,7 +127,7 @@ dans `Domain/Contrat/`, les ports requis par les cas d'usage dans
 ## Commandes
 
 ```bash
-# Auto-test de la bibliotheque (36 controles)
+# Auto-test de la bibliotheque (37 controles)
 php outils/verification.php
 
 # Regenerer la documentation Word depuis les fichiers Markdown
