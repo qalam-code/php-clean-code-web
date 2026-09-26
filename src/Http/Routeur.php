@@ -81,13 +81,14 @@ final class Routeur
      */
     private function normaliser(string $chemin): string
     {
-        $chemin = (string) parse_url($chemin, PHP_URL_PATH);
+        $chemin = strtolower((string) parse_url($chemin, PHP_URL_PATH));
+        $base = strtolower($this->base);
         // Le prefixe doit occuper un segment entier : /api ne doit pas
         // transformer /apix/facture en /x/facture.
-        if ($this->base !== '/' && ($chemin === $this->base || strpos($chemin, $this->base . '/') === 0)) {
-            $chemin = substr($chemin, strlen($this->base));
+        if ($base !== '/' && ($chemin === $base || strpos($chemin, $base . '/') === 0)) {
+            $chemin = substr($chemin, strlen($base));
         }
-        return strtolower(trim($chemin, '/'));
+        return trim($chemin, '/');
     }
 }
 

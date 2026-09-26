@@ -227,6 +227,7 @@ $v->egal('GET', $reponse405->entetes()['Allow'], '405 annonce les methodes permi
 $routeurPrefixe = new Routeur('/api');
 $routeurPrefixe->ajouter('x/facture', function () {}, function () { return new PresentateurCommun(); });
 $v->vrai($routeurPrefixe->resoudre('/api/x/facture') !== null, 'prefixe exact retire');
+$v->vrai($routeurPrefixe->resoudre('/API/x/facture') !== null, 'casse du prefixe ignoree');
 $v->egal(null, $routeurPrefixe->resoudre('/apix/facture'), 'prefixe partiel conserve');
 
 // Le presentateur de la route garde la main sur le format de la reponse 405.
