@@ -256,7 +256,8 @@ final class SurveillanceTimeout implements SurveillanceInterface
 }
 ```
 
-**Rôle** — Garde-temps basé sur l'horloge murale, démarré à la construction.
+**Rôle** — Garde-temps démarré à la construction et basé sur l'horloge
+monotone `hrtime()`, qui ne saute pas quand l'heure système est corrigée.
 
 **La marge est le point important.** `tempsRestant()` répond `true` tant que
 `ecoule() < limite - marge`. Elle ne dit donc pas « reste-t-il du temps ? » mais

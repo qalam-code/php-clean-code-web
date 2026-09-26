@@ -6,7 +6,7 @@ namespace PhpCleanCode\Infrastructure;
 use PhpCleanCode\Application\Port\SurveillanceInterface;
 
 /**
- * Garde-temps base sur l'horloge murale.
+ * Garde-temps base sur une horloge monotone.
  *
  * LA MARGE EST LE POINT IMPORTANT. tempsRestant() ne repond pas "reste-t-il
  * du temps ?" mais "reste-t-il au moins une etape de temps ?". Une
@@ -20,13 +20,13 @@ use PhpCleanCode\Application\Port\SurveillanceInterface;
  */
 final class SurveillanceTimeout implements SurveillanceInterface
 {
-    private float $depart;
+    private int $depart;
     private float $limite;
     private float $marge;
 
     public function __construct(float $limiteSecondes = 25.0, float $margeSecondes = 5.0)
     {
-        $this->depart = microtime(true);
+        $this->depart = hrtime(true);
         $this->limite = $limiteSecondes;
         $this->marge  = $margeSecondes;
     }
@@ -38,7 +38,7 @@ final class SurveillanceTimeout implements SurveillanceInterface
 
     public function ecoule(): float
     {
-        return microtime(true) - $this->depart;
+        return (hrtime(true) - $this->depart) / 1000000000;
     }
 }
 
