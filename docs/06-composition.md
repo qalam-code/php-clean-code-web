@@ -141,17 +141,30 @@ Le squelette en donne un exemple complet. La structure :
 ```php
 final class Fabrique extends FabriqueBase
 {
-    // 1. Les routes � la carte de l'application
+    // 1. Les definitions viennent de routes/api.php ; les fabriques concretes restent ici.
     public function routeur(): Routeur
     {
         $routeur = new Routeur((string) (getenv('BASE_URI') ?: ''));
 
-        $routeur->ajouter(
-            'facture',
-            function () { return new ControleurFacture($this->consulterFacture(), new PresentateurFacture()); },
-            function () { return new PresentateurFacture(); },
-            ['GET', 'POST']
-        );
+        $services = [
+            'facture' => [
+                'action' => function () {
+                    return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
+                },
+                'presentateur' => function () {
+                    return new PresentateurFacture();
+                },
+            ],
+        ];
+        foreach (require dirname(__DIR__) . '/routes/api.php' as $definition) {
+            $service = $services[$definition['service']];
+            $routeur->ajouter(
+                $definition['chemin'],
+                $service['action'],
+                $service['presentateur'],
+                $definition['methodes']
+            );
+        }
 
         return $routeur;
     }

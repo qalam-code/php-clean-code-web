@@ -29,7 +29,7 @@ Puis, dans l'ordre :
    jeton valide.
 3. **Domaine** — remplacez `Facture` par vos entites, `ErreurFacturation` par
    vos types d'erreur.
-4. **Routes** — declarez-les dans `src/Fabrique.php`.
+4. **Routes** — declarez les chemins et methodes dans `routes/api.php` ; le cablage des controleurs et presentateurs reste dans `src/Fabrique.php`.
 
 ---
 
@@ -44,7 +44,8 @@ Puis, dans l'ordre :
 | du SQL, un appel reseau, un fichier        | `src/Infrastructure/`          |
 | l'extraction des parametres HTTP           | `src/Presentation/Controleur/` |
 | les codes HTTP et le format des reponses   | `src/Presentation/Presentateur/`|
-| le cablage, les routes                     | `src/Fabrique.php`             |
+| chemins et methodes HTTP                   | `routes/api.php`               |
+| cablage des controleurs et presentateurs   | `src/Fabrique.php`             |
 
 **En cas de doute** : posez-vous la question « est-ce que ca survivrait si on
 remplacait MySQL par des fichiers, et HTTP par une ligne de commande ? ». Si

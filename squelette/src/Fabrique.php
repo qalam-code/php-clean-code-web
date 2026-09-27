@@ -28,8 +28,8 @@ use PhpCleanCode\Presentation\Authentificateur;
  * Racine de composition du projet.
  *
  * LISEZ CE FICHIER EN PREMIER quand vous decouvrez l'application : il dit
- * quels endpoints existent, quel cas d'usage repond a chacun, et de quoi ce
- * cas d'usage depend. Tout le reste en decoule.
+ * comment les services sont cables et de quoi chaque cas d'usage depend.
+ * La table des routes HTTP est dans routes/api.php.
  *
  * @package App\Exemple
  */
@@ -41,33 +41,45 @@ final class Fabrique extends FabriqueBase
         // A la racine d'un domaine, passez une chaine vide.
         $routeur = new Routeur((string) (getenv('BASE_URI') ?: ''));
 
-        // CHAQUE ROUTE DECLARE SON PROPRE PRESENTATEUR. C'est ce qui garantit
-        // qu'une panne survenue pendant le cablage de /facture sera rendue
-        // au format de /facture -- et non a celui d'un autre endpoint.
-        //
-        // Les deux entrees sont des fonctions : rien n'est construit pour
-        // les routes qui ne sont pas appelees.
-        $routeur->ajouter(
-            'login',
-            function () {
-                return new ControleurConnexion($this->connecter(), new PresentateurConnexion());
-            },
-            function () {
-                return new PresentateurConnexion();
-            },
-            ['POST']
-        );
+        // Les definitions de routes restent declaratives. Cette table de
+        // services relie leurs noms aux fabriques concretes, sans construire
+        // controleurs ni presentateurs avant qu'une route soit appelee.
+        $services = [
+            'connexion' => [
+                'action' => function () {
+                    return new ControleurConnexion($this->connecter(), new PresentateurConnexion());
+                },
+                'presentateur' => function () {
+                    return new PresentateurConnexion();
+                },
+            ],
+            'facture' => [
+                'action' => function () {
+                    return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
+                },
+                'presentateur' => function () {
+                    return new PresentateurFacture();
+                },
+            ],
+        ];
 
-        $routeur->ajouter(
-            'facture',
-            function () {
-                return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
-            },
-            function () {
-                return new PresentateurFacture();
-            },
-            ['GET', 'POST']
-        );
+        $definitions = require dirname(__DIR__) . '/routes/api.php';
+        foreach ($definitions as $definition) {
+            if (!isset($definition['chemin'], $definition['service'], $definition['methodes'])) {
+                throw new \InvalidArgumentException('Definition de route incomplete.');
+            }
+            if (!isset($services[$definition['service']])) {
+                throw new \InvalidArgumentException('Service de route inconnu.');
+            }
+
+            $service = $services[$definition['service']];
+            $routeur->ajouter(
+                $definition['chemin'],
+                $service['action'],
+                $service['presentateur'],
+                $definition['methodes']
+            );
+        }
 
         return $routeur;
     }

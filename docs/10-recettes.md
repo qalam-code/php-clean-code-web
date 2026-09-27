@@ -34,7 +34,7 @@ grep -rl 'App\\Exemple' . | xargs sed -i 's/App\\\\Exemple/App\\\\MonProjet/g'
 **3. Le domaine.** Remplacez `Facture` par vos entit�s, `ErreurFacturation` par
 vos types d'erreur. Supprimez ce qui ne sert pas.
 
-**4. Les routes**, dans `src/Fabrique.php`.
+**4. Les routes.** Ajoutez le chemin, le service et les methodes dans routes/api.php. Reliez ensuite ce service aux fabriques du controleur et du presentateur dans src/Fabrique.php.
 
 **5. La suite d'�quivalence.** R��crivez-la au fur et � mesure : elle doit
 d�crire **votre** contrat, pas celui de la facturation.
@@ -144,13 +144,24 @@ public function __invoke(Requete $requete): ReponseHttp
 ```
 
 ```php
-// src/Fabrique.php � dans routeur()
-$routeur->ajouter(
-    'annuler-facture',
-    function () { return new ControleurAnnulation($this->annulerFacture(), new PresentateurAnnulation()); },
-    function () { return new PresentateurAnnulation(); },
-    ['POST']
-);
+// routes/api.php
+return [
+    // ... routes deja declarees
+    ['chemin' => 'annuler-facture', 'service' => 'annulation', 'methodes' => ['POST']],
+];
+```
+
+Dans le tableau de services de src/Fabrique.php, ajoutez aussi la liaison :
+
+```php
+'annulation' => [
+    'action' => function () {
+        return new ControleurAnnulation($this->annulerFacture(), new PresentateurAnnulation());
+    },
+    'presentateur' => function () {
+        return new PresentateurAnnulation();
+    },
+],
 ```
 
 ### 6. Les contr�les

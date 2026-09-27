@@ -82,7 +82,8 @@ Puis, plus finement :
 | du SQL, un appel r�seau, une lecture de fichier | `Infrastructure/` |
 | l'extraction des param�tres HTTP | `Presentation/Controleur/` |
 | les codes HTTP et le format des r�ponses | `Presentation/Presentateur/` |
-| le c�blage et les routes | `Fabrique.php` |
+| chemins et methodes HTTP | routes/api.php dans le projet |
+| cablage des controleurs et presentateurs | Fabrique.php |
 
 ## 1.4 Le trajet d'une requ�te
 

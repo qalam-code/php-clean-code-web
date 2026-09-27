@@ -60,7 +60,7 @@ Puis, dans la copie :
    (`src/`, `autoload.php`, `composer.json`).
 2. Ajustez `public/.htaccess` : `RewriteBase`, et les `SetEnv` de configuration.
 3. Remplacez le domaine d'exemple (facture, utilisateur) par le votre.
-4. Declarez vos routes dans `src/Fabrique.php`.
+4. Declarez les chemins et methodes dans `routes/api.php` ; cablez les services dans `src/Fabrique.php`.
 
 Verifiez que tout repond avant d'ecrire une ligne :
 
