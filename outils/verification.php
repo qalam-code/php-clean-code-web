@@ -327,6 +327,24 @@ $v->egal(404, $a->servir(new Requete('GET', '/boum'))->code(), 'ErreurMetier tra
 $v->egal(404, $a->servir(new Requete('GET', '/ailleurs'))->code(), 'chemin inconnu');
 $v->egal(['ok', 'boum'], $routeur->chemins(), 'inventaire des routes');
 
+$actionAppele = false;
+$routeur->ajouter('corps-invalide', function () use (&$actionAppele) {
+    return function () use (&$actionAppele) {
+        $actionAppele = true;
+        return new ReponseHttp(200, ['statut' => 'succes']);
+    };
+}, function () {
+    return new PresentateurCommun();
+}, ['POST']);
+$reponseCorpsInvalide = $a->servir(new Requete('POST', '/corps-invalide', [], [], [], true));
+$v->egal(400, $reponseCorpsInvalide->code(), 'corps JSON invalide : 400');
+$v->egal(
+    ['statut' => 'erreur', 'message' => 'corps de requete invalide'],
+    $reponseCorpsInvalide->corps(),
+    'corps JSON invalide : format public stable'
+);
+$v->egal(false, $actionAppele, 'corps JSON invalide : le cas d usage ne demarre pas');
+
 // ---------------------------------------------------------------------------
 $v->section('Declarabilite -- le piege qui a coute le plus cher');
 

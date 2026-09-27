@@ -74,6 +74,9 @@ final class Aiguillage
         }
 
         try {
+            if ($requete->corpsInvalide()) {
+                return $presentateur->corpsInvalide();
+            }
             $fabriqueAction = $route['action'];
             $action         = $fabriqueAction();
             return $action($requete);

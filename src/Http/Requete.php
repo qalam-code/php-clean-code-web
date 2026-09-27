@@ -24,31 +24,43 @@ final class Requete
     private $corps;
     private $requeteUrl;
     private $entetes;
+    private $corpsInvalide;
 
     public function __construct(
         string $methode,
         string $chemin,
         array $corps = [],
         array $requeteUrl = [],
-        array $entetes = []
+        array $entetes = [],
+        bool $corpsInvalide = false
     ) {
         $this->methode    = strtoupper($methode);
         $this->chemin     = $chemin;
         $this->corps      = $corps;
         $this->requeteUrl = $requeteUrl;
         $this->entetes    = array_change_key_case($entetes, CASE_LOWER);
+        $this->corpsInvalide = $corpsInvalide;
     }
 
     public static function depuisGlobales(): self
     {
         $brut  = (string) file_get_contents('php://input');
         $corps = [];
+        $corpsInvalide = false;
         if ($brut !== '') {
-            $decode = json_decode($brut, true);
-            $corps  = is_array($decode) ? $decode : [];
+            $decode = json_decode($brut);
+            if (json_last_error() === JSON_ERROR_NONE && is_object($decode)) {
+                $corps = (array) $decode;
+            } elseif ($_POST !== []) {
+                // Un formulaire classique peut aussi laisser des octets dans
+                // php://input ; $_POST reste alors la source de ses champs.
+                $corps = $_POST;
+            } else {
+                $corpsInvalide = true;
+            }
         }
-        // Un formulaire classique n'arrive pas par php://input.
-        if ($corps === [] && $_POST !== []) {
+        // Un formulaire classique vide n'arrive pas par php://input.
+        if ($brut === '' && $_POST !== []) {
             $corps = $_POST;
         }
 
@@ -59,7 +71,8 @@ final class Requete
             $chemin,
             $corps,
             $_GET,
-            self::entetesDuServeur()
+            self::entetesDuServeur(),
+            $corpsInvalide
         );
     }
 
@@ -77,6 +90,12 @@ final class Requete
     public function corps(): array
     {
         return $this->corps;
+    }
+
+    /** Le flux brut contenait un JSON invalide ou qui n'etait pas un objet. */
+    public function corpsInvalide(): bool
+    {
+        return $this->corpsInvalide;
     }
 
     /** @return mixed valeur du corps, puis de la query string, sinon $defaut. */

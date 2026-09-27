@@ -46,6 +46,12 @@ abstract class PresentateurAbstrait
         ]);
     }
 
+    /** Reponse pour un corps JSON mal forme ou qui n'est pas un objet. */
+    public function corpsInvalide(): ReponseHttp
+    {
+        return $this->echec(400, 'erreur', 'corps de requete invalide');
+    }
+
     /**
      * Filet : l'imprevu, celui qu'aucun type ne decrit.
      *
