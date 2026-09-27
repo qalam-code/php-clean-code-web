@@ -1,4 +1,4 @@
-﻿{
+{
     "name": "flexeau/php-clean-code",
     "description": "Socle Clean Architecture pour API PHP : HTTP, persistance, erreurs, authentification et harnais de tests.",
     "type": "library",
