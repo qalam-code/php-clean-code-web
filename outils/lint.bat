@@ -1,7 +1,7 @@
 ﻿@echo off
 REM Controle de compatibilite en deux passes, sous une version precise de PHP.
 REM
-REM   lint.bat [chemin\vers\php.exe] [racine-src] [prefixe-namespace] [version]
+REM   lint.bat [chemin\vers\php.exe] [racine-src] [prefixe-namespace] [version] [bootstrap]
 REM
 REM Exemple, pour un projet en 7.0 :
 REM   outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\Paiement 7.0
@@ -22,6 +22,8 @@ if "%PREFIXE%"=="" set "PREFIXE=PhpCleanCode"
 
 set "CIBLE=%~4"
 if "%CIBLE%"=="" set "CIBLE=7.4"
+
+set "BOOTSTRAP=%~5"
 
 where "%PHP%" >nul 2>&1
 if errorlevel 1 if not exist "%PHP%" (
@@ -57,7 +59,7 @@ if !KO! gtr 0 exit /b 1
 echo === Passe 2 : liaison des classes ===
 echo (visibilite, signatures, interfaces -- ce que "php -l" ne voit pas)
 echo.
-"%PHP%" "%~dp0compat.php" "%SRC%" "%PREFIXE%" "%CIBLE%"
+"%PHP%" "%~dp0compat.php" "%SRC%" "%PREFIXE%" "%CIBLE%" "%BOOTSTRAP%"
 
 exit /b %errorlevel%
 

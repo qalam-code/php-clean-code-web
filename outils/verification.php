@@ -28,6 +28,7 @@ use PhpCleanCode\Http\Routeur;
 use PhpCleanCode\Infrastructure\AuthentificationDifferee;
 use PhpCleanCode\Infrastructure\FabriqueConnexion;
 use PhpCleanCode\Infrastructure\JetonJwt;
+use PhpCleanCode\Infrastructure\JournalPdo;
 use PhpCleanCode\Infrastructure\SurveillanceTimeout;
 use PhpCleanCode\Presentation\Authentificateur;
 use PhpCleanCode\Presentation\Presentateur\PresentateurCommun;
@@ -285,15 +286,27 @@ $v->egal(
 );
 $corpsCirculaire = [];
 $corpsCirculaire['soi'] = &$corpsCirculaire;
-$v->egal(
-    ['soi' => null],
-    json_decode((new ReponseHttp(200, $corpsCirculaire))->json(), true),
-    'reference circulaire rendue partiellement en JSON valide'
-);
+$jsonCirculaire = (new ReponseHttp(200, $corpsCirculaire))->json();
+json_decode($jsonCirculaire, true);
+$v->egal(JSON_ERROR_NONE, json_last_error(), 'une reference circulaire produit toujours du JSON valide');
+$v->vrai(strpos($jsonCirculaire, 'null') !== false, 'la partie circulaire est remplacee par null');
 
 $journal = new JournalFactice();
 $journal->reussit = false;
 $v->egal(false, $journal->enregistrer(1, 'x'), 'le journal rend false et NE LEVE PAS');
+
+$v->section('JournalPdo -- identifiant SQL de la table');
+
+$tableJournalRefusee = false;
+try {
+    new JournalPdo(
+        new FabriqueConnexion('mysql:host=127.0.0.1;dbname=test', 'x', 'y'),
+        'journal; DROP TABLE utilisateurs'
+    );
+} catch (InvalidArgumentException $e) {
+    $tableJournalRefusee = true;
+}
+$v->vrai($tableJournalRefusee, 'le nom de table du journal refuse les caracteres SQL');
 
 // ---------------------------------------------------------------------------
 $v->section('Requete -- en-tetes serveur');

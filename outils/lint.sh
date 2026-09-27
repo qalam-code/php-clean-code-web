@@ -1,7 +1,7 @@
 ﻿#!/bin/sh
 # Controle de compatibilite en deux passes, sous une version precise de PHP.
 #
-#   outils/lint.sh [php] [racine-src] [prefixe-namespace] [version]
+#   outils/lint.sh [php] [racine-src] [prefixe-namespace] [version] [bootstrap]
 #
 # Exemple :
 #   outils/lint.sh php7.0 src App\\Exemple 7.0
@@ -16,6 +16,7 @@ RACINE="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="${2:-$RACINE/src}"
 PREFIXE="${3:-PhpCleanCode}"
 CIBLE="${4:-7.4}"
+BOOTSTRAP="${5:-}"
 
 if ! command -v "$PHP" >/dev/null 2>&1 && [ ! -x "$PHP" ]; then
     echo "Binaire introuvable : $PHP"
@@ -45,5 +46,5 @@ echo
 echo "=== Passe 2 : liaison des classes ==="
 echo '(visibilite, signatures, interfaces -- ce que "php -l" ne voit pas)'
 echo
-"$PHP" "$RACINE/outils/compat.php" "$SRC" "$PREFIXE" "$CIBLE"
+"$PHP" "$RACINE/outils/compat.php" "$SRC" "$PREFIXE" "$CIBLE" "$BOOTSTRAP"
 

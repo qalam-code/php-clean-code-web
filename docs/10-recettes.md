@@ -303,7 +303,7 @@ Voir [`08-outils.md`](08-outils.md) � 8.4.
 **2. V�rifier la version cible.**
 
 ```bash
-outils/lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\MonProjet 7.0
+outils/lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\MonProjet 7.0 vendor\autoload.php
 ```
 
 Faites-le t�t : d�couvrir en fin de refactoring que la production refuse une

@@ -7,6 +7,10 @@ tests qui va avec.
 **PHP 7.0 minimum. Aucune dépendance tierce.** Seules les extensions `json`
 et `pdo` sont requises. Composer installe le squelette et le framework.
 
+La compatibilité PHP 7.0 est conservée pour les anciens déploiements ; cette
+branche n'est plus prise en charge par l'équipe PHP. Pour un nouveau
+déploiement, choisissez une version de PHP encore maintenue.
+
 Ce qui n'est **pas** ici : votre domaine et vos cas d'usage. Ils sont propres a
 chaque projet ; les mutualiser reviendrait a mutualiser votre metier.
 
@@ -151,7 +155,7 @@ dans `Domain/Contrat/`, les ports requis par les cas d'usage dans
 ## Commandes
 
 ```bash
-# Auto-test de la bibliotheque (53 controles, 55 avec PDO SQLite)
+# Auto-test de la bibliotheque (55 controles, 57 avec PDO SQLite)
 php outils/verification.php
 
 # Regenerer la documentation Word depuis les fichiers Markdown
@@ -165,7 +169,7 @@ outils/lint.sh php7.0 src PhpCleanCode 7.0
 outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src PhpCleanCode 7.0
 
 # Sur un projet bati avec le socle
-outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe ..\mon-projet\src App\MonProjet 7.0
+outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe ..\mon-projet\src App\MonProjet 7.0 ..\mon-projet\vendor\autoload.php
 ```
 
 `lint` fait deux passes. **La seconde est celle qui compte** : `php -l` ne

@@ -24,6 +24,7 @@ version longue — celle qu'on ouvre quand on se demande *pourquoi* une classe e
 | 9 | [`09-squelette.md`](09-squelette.md) | Le projet d'exemple, fichier par fichier |
 | 10 | [`10-recettes.md`](10-recettes.md) | Ajouter un endpoint, un dépôt, un type d'erreur ; migrer un projet existant |
 | 11 | [`11-pieges.md`](11-pieges.md) | Les sept pièges, en détail et avec leur histoire |
+| 12 | [`12-vues-web.md`](12-vues-web.md) | Préparer l'ajout de réponses HTML et de vues sans mêler le domaine au rendu |
 
 ---
 
@@ -84,6 +85,6 @@ champs ».
 - Outils (`compat.php`, harnais de caractérisation) : écrits en **PHP 7.0
   strict**, pour pouvoir tourner sur la production la plus ancienne.
 - Cette documentation décrit l'état du **27/09/2026** : 28 types dans `src/`,
-  53 contrôles d'auto-test (55 avec PDO SQLite), 53 contrôles d'équivalence
+  55 contrôles d'auto-test (57 avec PDO SQLite), 53 contrôles d'équivalence
   sur le squelette.
 

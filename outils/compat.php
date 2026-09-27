@@ -2,11 +2,11 @@
 /**
  * Controle de LIAISON sous la version de PHP de production.
  *
- *     php outils/compat.php [racine-src] [prefixe-namespace] [version-cible]
+ *     php outils/compat.php [racine-src] [prefixe-namespace] [version-cible] [bootstrap]
  *
  * Exemples :
  *     C:\wamp64\bin\php\php7.0.33\php.exe outils\compat.php src App\Paiement 7.0
- *     php outils/compat.php squelette/src App\Exemple 7.0
+ *     php outils/compat.php squelette/src App\Exemple 7.0 autoload.php
  *
  * A EXECUTER AVEC LE BINAIRE DE LA VERSION VISEE, pas avec un autre.
  *
@@ -34,6 +34,16 @@
 $racine   = isset($argv[1]) ? $argv[1] : dirname(__DIR__) . '/src';
 $prefixe  = isset($argv[2]) ? rtrim($argv[2], '\\') . '\\' : 'PhpCleanCode\\';
 $cible    = isset($argv[3]) ? $argv[3] : '7.0';
+$bootstrap = isset($argv[4]) ? $argv[4] : '';
+
+if ($bootstrap !== '') {
+    $bootstrap = realpath($bootstrap);
+    if ($bootstrap === false || !is_file($bootstrap)) {
+        echo 'Bootstrap introuvable.' . PHP_EOL;
+        exit(2);
+    }
+    require_once $bootstrap;
+}
 
 $racine = realpath($racine);
 if ($racine === false) {

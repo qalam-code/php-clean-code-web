@@ -28,7 +28,7 @@ outils/
 php outils/verification.php
 ```
 
-**53 contrôles** sur la bibliothèque elle-même (55 si PDO SQLite est disponible), répartis en onze sections :
+**55 contrôles** sur la bibliothèque elle-même (57 si PDO SQLite est disponible), répartis en douze sections :
 
 | Section | Ce qui est éprouvé |
 |---|---|
@@ -39,6 +39,7 @@ php outils/verification.php
 | Paresse | rien de construit trop tôt, aucune connexion avant `pdo()` |
 | Surveillance | épuisement par étapes, effet réel de la marge |
 | ReponseHttp | ordre des clés, accents non échappés, journal qui ne lève pas |
+| JournalPdo | nom de table contraint à un identifiant SQL simple |
 | Requête — en-têtes serveur | en-têtes Apache récupérés depuis les globales |
 | Architecture | dépendances orientées vers l'intérieur |
 | Aiguillage | route servie, `ErreurMetier` traduite, chemin inconnu, inventaire |
@@ -66,11 +67,12 @@ production.
 ## 8.2 `compat.php` — le contrôle de liaison
 
 ```bash
-php outils/compat.php [racine-src] [prefixe-namespace] [version-cible]
+php outils/compat.php [racine-src] [prefixe-namespace] [version-cible] [bootstrap]
 
 # Exemples
 C:\wamp64\bin\php\php7.0.33\php.exe outils\compat.php src App\Paiement 7.0
 php outils/compat.php squelette/src App\Exemple 7.4
+php outils/compat.php squelette/src App\Exemple 7.0 autoload.php
 ```
 
 **Pourquoi ce script existe.** `php -l` ne vérifie que la **syntaxe** : il ne
@@ -110,11 +112,12 @@ quelle version pour avoir une chance de dire ce qui ne va pas.
 outils/lint.sh php7.0 src PhpCleanCode 7.0
 
 # Windows
-outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\Paiement 7.0
+outils\lint.bat C:\wamp64\bin\php\php7.0.33\php.exe src App\Paiement 7.0 vendor\autoload.php
 ```
 
-Quatre arguments, tous optionnels : le binaire PHP, la racine des sources, le
-préfixe de namespace, la version cible.
+Cinq arguments, tous optionnels : le binaire PHP, la racine des sources, le
+préfixe de namespace, la version cible et le chemin vers un autoloader de
+dépendances. Passez `vendor/autoload.php` si les types vérifiés en dépendent.
 
 | Passe | Outil | Ce qu'elle voit |
 |---|---|---|

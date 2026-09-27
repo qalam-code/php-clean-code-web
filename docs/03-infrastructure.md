@@ -227,6 +227,11 @@ accomplie ne soit pas annul�e par sa propre trace.
 **Sch�ma attendu** � La table doit avoir `acteur_id`, `action`, `detail`,
 `horodatage` :
 
+Le nom de table est un identifiant SQL, pas une valeur paramétrable : le
+constructeur n'accepte que les lettres ASCII, les chiffres et `_`, avec une
+lettre ou `_` en premier caractère, et une longueur maximale de 64 caractères.
+Les valeurs d'action et de détail restent, elles, liées par paramètres PDO.
+
 ```sql
 CREATE TABLE journal (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

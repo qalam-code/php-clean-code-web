@@ -26,6 +26,9 @@ final class JournalPdo extends DepotPdo implements JournalInterface
 
     public function __construct(FabriqueConnexion $connexion, string $table = 'journal')
     {
+        if (strlen($table) > 64 || preg_match('/\A[A-Za-z_][A-Za-z0-9_]*\z/', $table) !== 1) {
+            throw new \InvalidArgumentException('Nom de table invalide pour JournalPdo.');
+        }
         parent::__construct($connexion);
         $this->table = $table;
     }
