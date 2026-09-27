@@ -26,6 +26,8 @@ use PhpCleanCode\Presentation\Presentateur\PresentateurCommun;
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
 
+require __DIR__ . '/../config/charger-environnement.php';
+
 $requete = Requete::depuisGlobales();
 
 $aiguillage = new Aiguillage(

@@ -15,8 +15,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
 
-# Configuration : a definir sur le serveur, jamais dans un fichier versionne.
-# Decommentez et renseignez, ou utilisez la configuration du vhost.
+# Configuration : .env pour le developpement local ; variables du serveur ou
+# du vhost en production. Ne versionnez jamais le fichier .env.
 #
 # SetEnv JWT_SECRET        remplacez-moi-par-une-valeur-aleatoire-longue
 # SetEnv DB_HOTE           127.0.0.1

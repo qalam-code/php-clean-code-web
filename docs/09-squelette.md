@@ -89,8 +89,7 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 > endpoints authentifi�s r�pondent � token introuvable � alors que le client
 > l'envoie bien.
 
-**3. La configuration**, en commentaire, � d�commenter et renseigner sur le
-serveur � jamais dans un fichier versionn�.
+**3. La configuration.** Composer copie .env.example vers .env a la creation du projet. Renseignez les variables locales dans .env ; ce fichier est ignore par Git. En production, les variables du serveur ou du vhost sont prioritaires.
 
 ---
 
@@ -368,7 +367,7 @@ propres au squelette :
 
 - chaque route d�clare **son** pr�sentateur ;
 - l'authentification est **diff�r�e**, parce que la construire touche la base ;
-- `JWT_SECRET` **n'a pas de valeur de repli** : absence = refus de d�marrer.
+- JWT_SECRET n'a pas de valeur de repli : renseignez-le dans .env ou dans l'environnement du serveur, sinon le service de jetons refuse de demarrer.
 
 ---
 
