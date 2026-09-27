@@ -10,7 +10,8 @@ Il n'est pas la pour etre garde tel quel : il est la pour montrer ou va quoi.
 ## Mise en route
 
 ```bash
-composer create-project --repository='{"type":"vcs","url":"https://github.com/qalam-code/php-clean-code-skeleton"}' qalam-code/php-clean-code-skeleton mon-projet
+composer config --global repositories.qalam-skeleton vcs https://github.com/qalam-code/php-clean-code-skeleton
+composer create-project qalam-code/php-clean-code-skeleton mon-projet
 cd mon-projet
 php tests/architecture/equivalence.php
 ```

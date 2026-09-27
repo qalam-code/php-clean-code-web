@@ -35,7 +35,8 @@ reference : ne corrigez jamais le `.docx` a la main.
 ## Demarrer un projet
 
 ```
-composer create-project --repository='{"type":"vcs","url":"https://github.com/qalam-code/php-clean-code-skeleton"}' qalam-code/php-clean-code-skeleton mon-projet
+composer config --global repositories.qalam-skeleton vcs https://github.com/qalam-code/php-clean-code-skeleton
+composer create-project qalam-code/php-clean-code-skeleton mon-projet
 ```
 
 Cette commande prend le squelette public sur GitHub ; son manifeste récupère le
