@@ -135,6 +135,11 @@ dans `Domain/Contrat/`, les ports requis par les cas d'usage dans
 - **`Presentateur\PresentateurAbstrait`** — le contrat de l'API vit ici.
 - **`Presentateur\PresentateurCommun`** — traductions des types de la biblio.
 
+### Composition
+
+- **`Fabrique` et `Conteneur`** — câblage explicite des services, construction
+  différée et instances partagées pendant une requête.
+
 ### Tests
 
 - **`Test\Verificateur`** — `egal`, `vrai`, `leve`, `reponseEgale`, `bilan`.
@@ -146,7 +151,7 @@ dans `Domain/Contrat/`, les ports requis par les cas d'usage dans
 ## Commandes
 
 ```bash
-# Auto-test de la bibliotheque (41 controles, 43 avec PDO SQLite)
+# Auto-test de la bibliotheque (53 controles, 55 avec PDO SQLite)
 php outils/verification.php
 
 # Regenerer la documentation Word depuis les fichiers Markdown

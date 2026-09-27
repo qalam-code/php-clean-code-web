@@ -384,16 +384,16 @@ valide, le compte non.
 
 ### `equivalence.php`
 
-**43 contr�les**, sans base, sans serveur, sans r�seau. Tout tourne en m�moire,
+**53 contrôles**, sans base, sans serveur, sans réseau. Tout tourne en mémoire,
 en une fraction de seconde � c'est ce qui permet de la relancer apr�s chaque
 modification. Une suite qu'on ne relance pas ne prot�ge de rien.
 
 | Section | Contr�les | Ce qui est v�rifi� |
 |---|---|---|
-| 1. Domaine | 4 | conversion des centimes, r�gle `estPayable`, invariant du constructeur |
+| 1. Domaine | 7 | conversion des centimes, r�gle `estPayable`, invariant du constructeur |
 | 2. Cas d'usage | 10 | cas nominal, refus, **ordre authentification/lecture**, non-�num�ration des comptes, journal en �chec |
 | 3. Contrat HTTP | 21 | codes, cl�s, **ordre des cl�s**, non-fuite du d�tail technique, indiscernabilit� des jetons invalides |
-| 4. Routage | 8 | pr�fixe retir�, casse ignor�e, 404, 405, panne de c�blage rendue par le bon pr�sentateur |
+| 4. Routage | 15 | pr�fixe retir�, casse ignor�e, 404, 405, panne de c�blage rendue par le bon pr�sentateur |
 
 **La section 3 est celle qui prot�ge les consommateurs tiers.** Un refactoring
 peut tout r�organiser en dessous : tant que ces contr�les passent, aucun client

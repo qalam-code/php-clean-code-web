@@ -7,7 +7,7 @@
         "php": ">=7.0",
         "ext-json": "*",
         "ext-pdo": "*",
-        "qalam-code/php-clean-code": "^0.1"
+        "qalam-code/php-clean-code": "^0.3"
     },
     "repositories": [
         {

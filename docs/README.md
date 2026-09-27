@@ -83,7 +83,7 @@ champs ».
 - Socle : **PHP 7.0 minimum**, extensions `json` et `pdo`. Aucune dépendance.
 - Outils (`compat.php`, harnais de caractérisation) : écrits en **PHP 7.0
   strict**, pour pouvoir tourner sur la production la plus ancienne.
-- Cette documentation décrit l'état du **26/09/2026** : 27 types dans `src/`,
-  41 contrôles d'auto-test (43 avec PDO SQLite), 53 contrôles d'équivalence
+- Cette documentation décrit l'état du **27/09/2026** : 28 types dans `src/`,
+  53 contrôles d'auto-test (55 avec PDO SQLite), 53 contrôles d'équivalence
   sur le squelette.
 

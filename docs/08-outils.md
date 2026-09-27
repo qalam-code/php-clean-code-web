@@ -28,16 +28,19 @@ outils/
 php outils/verification.php
 ```
 
-**36 contrôles** sur la bibliothèque elle-même, répartis en huit sections :
+**53 contrôles** sur la bibliothèque elle-même (55 si PDO SQLite est disponible), répartis en onze sections :
 
 | Section | Ce qui est éprouvé |
 |---|---|
+| Conteneur | partage, nouvelle instance, service inconnu ou dupliqué, cycle |
 | JetonJwt — accepté | aller-retour de la charge, `iat`, format base64url |
 | JetonJwt — refusé | chaîne quelconque, charge modifiée, `alg:none`, autre secret, expiration, absence d'`exp`, secret vide |
 | Authentificateur | `Bearer`, casse, en-tête absent ou vide, compte supprimé, mémoïsation |
 | Paresse | rien de construit trop tôt, aucune connexion avant `pdo()` |
 | Surveillance | épuisement par étapes, effet réel de la marge |
 | ReponseHttp | ordre des clés, accents non échappés, journal qui ne lève pas |
+| Requête — en-têtes serveur | en-têtes Apache récupérés depuis les globales |
+| Architecture | dépendances orientées vers l'intérieur |
 | Aiguillage | route servie, `ErreurMetier` traduite, chemin inconnu, inventaire |
 | Déclarabilité | **visibilité du constructeur par réflexion**, fabriques nommées |
 

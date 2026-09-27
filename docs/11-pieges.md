@@ -412,5 +412,5 @@ ordinaire. Ils se voient quand on **v�rifie l'absence** � pas d'exception qu
 fuit, pas de connexion ouverte, pas de `SQLSTATE` dans la r�ponse, pas de cl�
 d�plac�e.
 
-C'est ce que font les 36 contr�les de `verification.php` et les 43 du squelette.
+C'est ce que font les 53 contrôles de `verification.php` (55 avec PDO SQLite) et les 53 du squelette.
 
