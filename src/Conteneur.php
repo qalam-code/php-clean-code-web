@@ -20,8 +20,8 @@ final class Conteneur
     /** @var array<string,mixed> */
     private $instances = [];
 
-    /** @var array<string,bool> */
-    private $enConstruction = [];
+    /** @var array<int,string> */
+    private $pileConstruction = [];
 
     /**
      * Enregistre une fabrique explicite.
@@ -61,15 +61,18 @@ final class Conteneur
             return $this->instances[$identifiant];
         }
 
-        if (isset($this->enConstruction[$identifiant])) {
-            throw new \RuntimeException('Dependance circulaire detectee : ' . $identifiant);
+        $position = array_search($identifiant, $this->pileConstruction, true);
+        if ($position !== false) {
+            $cycle = array_slice($this->pileConstruction, $position);
+            $cycle[] = $identifiant;
+            throw new \RuntimeException('Dependance circulaire detectee : ' . implode(' -> ', $cycle));
         }
 
-        $this->enConstruction[$identifiant] = true;
+        $this->pileConstruction[] = $identifiant;
         try {
             $instance = call_user_func($definition['fabrique'], $this);
         } finally {
-            unset($this->enConstruction[$identifiant]);
+            array_pop($this->pileConstruction);
         }
 
         if ($definition['partagee']) {

@@ -2,6 +2,10 @@
 
 `src/Test/` — **cinq fichiers** : un vérificateur et quatre doubles.
 
+Le script `outils/verification.php` inclut aussi les vérifications du conteneur :
+service partagé, service non partagé, identifiant inconnu ou dupliqué et cycle
+de dépendances. Lancez-le avec `php outils/verification.php`.
+
 ---
 
 ## 7.1 Pourquoi pas PHPUnit

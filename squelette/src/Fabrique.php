@@ -68,8 +68,17 @@ final class Fabrique extends FabriqueBase
             $prefixe = ucfirst($definition['service']);
             $idControleur = __NAMESPACE__ . '\\Presentation\\Controleur\\Controleur' . $prefixe;
             $idPresentateur = __NAMESPACE__ . '\\Presentation\\Presentateur\\Presentateur' . $prefixe;
-            if (!$this->serviceDefini($idControleur) || !$this->serviceDefini($idPresentateur)) {
-                throw new \InvalidArgumentException('Service de route inconnu.');
+            if (!$this->serviceDefini($idControleur)) {
+                throw new \InvalidArgumentException(
+                    'Route "' . $definition['chemin'] . '" (service "' . $definition['service']
+                    . '") : fabrique du controleur manquante : ' . $idControleur
+                );
+            }
+            if (!$this->serviceDefini($idPresentateur)) {
+                throw new \InvalidArgumentException(
+                    'Route "' . $definition['chemin'] . '" (service "' . $definition['service']
+                    . '") : fabrique du presentateur manquante : ' . $idPresentateur
+                );
             }
 
             $routeur->ajouter(

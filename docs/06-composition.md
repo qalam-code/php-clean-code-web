@@ -112,7 +112,9 @@ moment de l'exécution : il dépendrait alors d'un *service locator*. À la plac
 on lui passe directement les objets dont il a besoin dans son constructeur.
 
 Les identifiants dupliqués, les services inconnus et les dépendances circulaires
-sont signalés par des exceptions explicites. Il n'y a ni auto-wiring ni
+sont signalés par des exceptions explicites. Un cycle indique son chemin complet
+(par exemple `A -> B -> A`). Dans le squelette, une liaison de route manquante
+nomme également la route et la fabrique attendue. Il n'y a ni auto-wiring ni
 instanciation par réflexion : chaque lien reste visible dans `Fabrique.php`.
 
 ## 6.6 `connexion()` : paresseuse deux fois

@@ -19,6 +19,7 @@ declare(strict_types=1);
 require dirname(__DIR__) . '/autoload.php';
 
 use PhpCleanCode\Application\Port\ResolveurActeurInterface;
+use PhpCleanCode\Conteneur;
 use PhpCleanCode\Domain\Entite\Identite;
 use PhpCleanCode\Domain\ErreurMetier;
 use PhpCleanCode\Http\Aiguillage;
@@ -38,6 +39,57 @@ use PhpCleanCode\Test\Verificateur;
 
 $v = new Verificateur();
 echo 'PHP ' . PHP_VERSION . PHP_EOL;
+
+// ---------------------------------------------------------------------------
+$v->section('Conteneur -- duree de vie et erreurs de configuration');
+
+$conteneur = new Conteneur();
+$constructionsPartagees = 0;
+$conteneur->definir('partage', function () use (&$constructionsPartagees) {
+    $constructionsPartagees++;
+    return new stdClass();
+});
+$partage1 = $conteneur->obtenir('partage');
+$partage2 = $conteneur->obtenir('partage');
+$v->vrai($partage1 === $partage2, 'un service partage retourne la meme instance');
+$v->egal(1, $constructionsPartagees, 'un service partage est construit une seule fois');
+
+$constructionsSimples = 0;
+$conteneur->definir('nouvelle-instance', function () use (&$constructionsSimples) {
+    $constructionsSimples++;
+    return new stdClass();
+}, false);
+$instance1 = $conteneur->obtenir('nouvelle-instance');
+$instance2 = $conteneur->obtenir('nouvelle-instance');
+$v->vrai($instance1 !== $instance2, 'un service non partage retourne une nouvelle instance');
+$v->egal(2, $constructionsSimples, 'un service non partage est construit a chaque resolution');
+
+$messageServiceInconnu = null;
+try {
+    $conteneur->obtenir('absent');
+} catch (InvalidArgumentException $e) {
+    $messageServiceInconnu = $e->getMessage();
+}
+$v->egal('Service inconnu : absent', $messageServiceInconnu, 'un service inconnu nomme son identifiant');
+
+$messageDoublon = null;
+try {
+    $conteneur->definir('partage', function () { return new stdClass(); });
+} catch (InvalidArgumentException $e) {
+    $messageDoublon = $e->getMessage();
+}
+$v->egal('Service deja defini : partage', $messageDoublon, 'un doublon est refuse et nomme');
+
+$cycle = new Conteneur();
+$cycle->definir('A', function ($c) { return $c->obtenir('B'); });
+$cycle->definir('B', function ($c) { return $c->obtenir('A'); });
+$messageCycle = null;
+try {
+    $cycle->obtenir('A');
+} catch (RuntimeException $e) {
+    $messageCycle = $e->getMessage();
+}
+$v->egal('Dependance circulaire detectee : A -> B -> A', $messageCycle, 'un cycle montre le chemin complet');
 
 // ---------------------------------------------------------------------------
 $v->section('JetonJwt -- ce qui doit etre accepte');
