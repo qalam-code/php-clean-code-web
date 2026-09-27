@@ -10,10 +10,13 @@ Il n'est pas la pour etre garde tel quel : il est la pour montrer ou va quoi.
 ## Mise en route
 
 ```bash
-cp -r squelette /chemin/vers/mon-projet
-cd /chemin/vers/mon-projet
-php tests/architecture/equivalence.php     # doit afficher 43 conformes
+composer create-project --repository='{"type":"vcs","url":"https://github.com/qalam-code/php-clean-code-skeleton"}' qalam-code/php-clean-code-skeleton mon-projet
+cd mon-projet
+php tests/architecture/equivalence.php
 ```
+
+Après enregistrement du squelette sur Packagist, la forme courte sera
+`composer create-project qalam-code/php-clean-code-skeleton mon-projet`.
 
 Puis, dans l'ordre :
 

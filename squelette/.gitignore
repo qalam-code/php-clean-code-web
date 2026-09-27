@@ -1,0 +1,5 @@
+/vendor/
+/auth.json
+/.env
+/.env.*
+!/.env.example

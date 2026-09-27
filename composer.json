@@ -1,8 +1,13 @@
 {
-    "name": "flexeau/php-clean-code",
+    "name": "qalam-code/php-clean-code",
     "description": "Socle Clean Architecture pour API PHP : HTTP, persistance, erreurs, authentification et harnais de tests.",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
+    "homepage": "https://github.com/qalam-code/phpCleanCode",
+    "keywords": ["clean-architecture", "framework", "api", "php"],
+    "support": {
+        "source": "https://github.com/qalam-code/phpCleanCode"
+    },
     "require": {
         "php": ">=7.0",
         "ext-json": "*",

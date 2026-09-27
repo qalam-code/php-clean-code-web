@@ -4,8 +4,8 @@ Socle Clean Architecture pour API PHP : la plomberie qui se repete d'un projet
 a l'autre — HTTP, persistance, erreurs, authentification — plus le harnais de
 tests qui va avec.
 
-**PHP 7.0 minimum. Aucune dependance** : ni Composer, ni bibliotheque tierce.
-Seules les extensions `json` et `pdo` sont requises.
+**PHP 7.0 minimum. Aucune dépendance tierce.** Seules les extensions `json`
+et `pdo` sont requises. Composer installe le squelette et le framework.
 
 Ce qui n'est **pas** ici : votre domaine et vos cas d'usage. Ils sont propres a
 chaque projet ; les mutualiser reviendrait a mutualiser votre metier.
@@ -35,7 +35,22 @@ reference : ne corrigez jamais le `.docx` a la main.
 ## Demarrer un projet
 
 ```
+composer create-project --repository='{"type":"vcs","url":"https://github.com/qalam-code/php-clean-code-skeleton"}' qalam-code/php-clean-code-skeleton mon-projet
+```
+
+Cette commande prend le squelette public sur GitHub ; son manifeste récupère le
+framework depuis son dépôt GitHub. Après enregistrement du squelette sur
+Packagist, la forme courte devient disponible :
+
+```
+composer create-project qalam-code/php-clean-code-skeleton mon-projet
+```
+
+Pour travailler depuis une copie locale du dépôt :
+
+```
 cp -r squelette /chemin/vers/mon-projet
+cd /chemin/vers/mon-projet
 ```
 
 Puis, dans la copie :

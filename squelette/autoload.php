@@ -2,9 +2,14 @@
 /**
  * Autochargement des deux espaces de noms, sans Composer.
  *
- * Si vous utilisez Composer, remplacez le contenu par :
- *     require __DIR__ . '/vendor/autoload.php';
+ * Utilise Composer apres installation, ou le chargeur du depot parent
+ * pendant le developpement du squelette dans le depot du framework.
  */
+
+if (is_file(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+    return;
+}
 
 $prefixes = [
     'App\\Exemple\\'  => __DIR__ . '/src/',
