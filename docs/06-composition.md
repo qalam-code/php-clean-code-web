@@ -21,6 +21,8 @@ abstract class Fabrique
     public function surveillance(): SurveillanceInterface;
 
     final protected function partage(string $cle, callable $construire);          // mixed
+    final protected function definirService(string $identifiant, callable $fabrique, bool $partagee = true);
+    final protected function resoudreService(string $identifiant);                // mixed
     final protected function authentificationDifferee(callable $construire): AuthentificationInterface;
 }
 ```
@@ -88,7 +90,32 @@ nom de la m�thode.
 
 ---
 
-## 6.5 `connexion()` : paresseuse deux fois
+## 6.5 `Conteneur` : résolution explicite
+
+Le conteneur ne devine pas les dépendances par réflexion. La fabrique lui
+enregistre des fabriques concrètes, identifiées par une clé, puis demande leur
+résolution quand une route est appelée. Par défaut, le service est partagé
+pendant la durée de vie de cette fabrique (une requête HTTP). Passez `false`
+au troisième argument de `definirService()` pour obtenir une nouvelle instance
+à chaque résolution.
+
+```php
+$this->definirService(ControleurFacture::class, function () {
+    return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
+});
+```
+
+Les fabriques peuvent recevoir le conteneur si elles doivent résoudre une
+dépendance, mais cela reste réservé à la composition. Un contrôleur ou un cas
+d'usage qui reçoit le conteneur pourrait choisir lui-même ses dépendances au
+moment de l'exécution : il dépendrait alors d'un *service locator*. À la place,
+on lui passe directement les objets dont il a besoin dans son constructeur.
+
+Les identifiants dupliqués, les services inconnus et les dépendances circulaires
+sont signalés par des exceptions explicites. Il n'y a ni auto-wiring ni
+instanciation par réflexion : chaque lien reste visible dans `Fabrique.php`.
+
+## 6.6 `connexion()` : paresseuse deux fois
 
 ```php
 final public function connexion(): FabriqueConnexion
@@ -113,7 +140,7 @@ base.
 
 ---
 
-## 6.6 `surveillance()` : r�gl�e sur la configuration du serveur
+## 6.7 `surveillance()` : r�gl�e sur la configuration du serveur
 
 ```php
 public function surveillance(): SurveillanceInterface
@@ -134,7 +161,7 @@ Red�finissez cette m�thode si la marge de cinq secondes ne convient pas � 
 
 ---
 
-## 6.7 �crire sa fabrique
+## 6.8 �crire sa fabrique
 
 Le squelette en donne un exemple complet. La structure :
 
@@ -146,22 +173,26 @@ final class Fabrique extends FabriqueBase
     {
         $routeur = new Routeur((string) (getenv('BASE_URI') ?: ''));
 
-        $services = [
-            'facture' => [
-                'action' => function () {
-                    return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
-                },
-                'presentateur' => function () {
-                    return new PresentateurFacture();
-                },
-            ],
-        ];
+        $this->definirService(ControleurFacture::class, function () {
+            return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
+        });
+        $this->definirService(PresentateurFacture::class, function () {
+            return new PresentateurFacture();
+        });
+
         foreach (require dirname(__DIR__) . '/routes/api.php' as $definition) {
-            $service = $services[$definition['service']];
+            $prefixe = ucfirst($definition['service']);
+            $idControleur = __NAMESPACE__ . '\\Presentation\\Controleur\\Controleur' . $prefixe;
+            $idPresentateur = __NAMESPACE__ . '\\Presentation\\Presentateur\\Presentateur' . $prefixe;
+
             $routeur->ajouter(
                 $definition['chemin'],
-                $service['action'],
-                $service['presentateur'],
+                function () use ($idControleur) {
+                    return $this->resoudreService($idControleur);
+                },
+                function () use ($idPresentateur) {
+                    return $this->resoudreService($idPresentateur);
+                },
                 $definition['methodes']
             );
         }
@@ -202,7 +233,7 @@ sans �tat ; un d�p�t porte la connexion, il doit �tre unique.
 
 ---
 
-## 6.8 La configuration
+## 6.9 La configuration
 
 Le squelette fournit un fichier .env.example. Composer le copie vers .env lors de la creation du projet. Le fichier .env est ignore par Git ; il contient les valeurs propres a chaque environnement.
 

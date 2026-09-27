@@ -152,17 +152,15 @@ return [
 ];
 ```
 
-Dans le tableau de services de src/Fabrique.php, ajoutez aussi la liaison :
+Dans src/Fabrique.php, enregistrez les deux fabriques explicites dans le conteneur :
 
 ```php
-'annulation' => [
-    'action' => function () {
-        return new ControleurAnnulation($this->annulerFacture(), new PresentateurAnnulation());
-    },
-    'presentateur' => function () {
-        return new PresentateurAnnulation();
-    },
-],
+$this->definirService(ControleurAnnulation::class, function () {
+    return new ControleurAnnulation($this->annulerFacture(), new PresentateurAnnulation());
+});
+$this->definirService(PresentateurAnnulation::class, function () {
+    return new PresentateurAnnulation();
+});
 ```
 
 ### 6. Les contr�les

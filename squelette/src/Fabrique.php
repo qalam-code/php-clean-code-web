@@ -41,47 +41,57 @@ final class Fabrique extends FabriqueBase
         // A la racine d'un domaine, passez une chaine vide.
         $routeur = new Routeur((string) (getenv('BASE_URI') ?: ''));
 
-        // Les definitions de routes restent declaratives. Cette table de
-        // services relie leurs noms aux fabriques concretes, sans construire
-        // controleurs ni presentateurs avant qu'une route soit appelee.
-        $services = [
-            'connexion' => [
-                'action' => function () {
-                    return new ControleurConnexion($this->connecter(), new PresentateurConnexion());
-                },
-                'presentateur' => function () {
-                    return new PresentateurConnexion();
-                },
-            ],
-            'facture' => [
-                'action' => function () {
-                    return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
-                },
-                'presentateur' => function () {
-                    return new PresentateurFacture();
-                },
-            ],
-        ];
+        // Les fabriques explicites gardent le cablage visible et sont
+        // construites seulement quand leur route est appelee.
+        $this->definirServiceParDefaut(ControleurConnexion::class, function () {
+            return new ControleurConnexion($this->connecter(), new PresentateurConnexion());
+        });
+        $this->definirServiceParDefaut(PresentateurConnexion::class, function () {
+            return new PresentateurConnexion();
+        });
+        $this->definirServiceParDefaut(ControleurFacture::class, function () {
+            return new ControleurFacture($this->consulterFacture(), new PresentateurFacture());
+        });
+        $this->definirServiceParDefaut(PresentateurFacture::class, function () {
+            return new PresentateurFacture();
+        });
 
         $definitions = require dirname(__DIR__) . '/routes/api.php';
         foreach ($definitions as $definition) {
             if (!isset($definition['chemin'], $definition['service'], $definition['methodes'])) {
                 throw new \InvalidArgumentException('Definition de route incomplete.');
             }
-            if (!isset($services[$definition['service']])) {
+            if (!is_string($definition['service']) || $definition['service'] === '') {
+                throw new \InvalidArgumentException('Prefixe de service invalide.');
+            }
+
+            $prefixe = ucfirst($definition['service']);
+            $idControleur = __NAMESPACE__ . '\\Presentation\\Controleur\\Controleur' . $prefixe;
+            $idPresentateur = __NAMESPACE__ . '\\Presentation\\Presentateur\\Presentateur' . $prefixe;
+            if (!$this->serviceDefini($idControleur) || !$this->serviceDefini($idPresentateur)) {
                 throw new \InvalidArgumentException('Service de route inconnu.');
             }
 
-            $service = $services[$definition['service']];
             $routeur->ajouter(
                 $definition['chemin'],
-                $service['action'],
-                $service['presentateur'],
+                function () use ($idControleur) {
+                    return $this->resoudreService($idControleur);
+                },
+                function () use ($idPresentateur) {
+                    return $this->resoudreService($idPresentateur);
+                },
                 $definition['methodes']
             );
         }
 
         return $routeur;
+    }
+
+    private function definirServiceParDefaut(string $identifiant, callable $fabrique)
+    {
+        if (!$this->serviceDefini($identifiant)) {
+            $this->definirService($identifiant, $fabrique);
+        }
     }
 
     protected function decrireConnexion(): FabriqueConnexion

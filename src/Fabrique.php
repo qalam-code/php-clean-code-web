@@ -40,13 +40,13 @@ use PhpCleanCode\Infrastructure\SurveillanceTimeout;
 abstract class Fabrique
 {
     private $requete;
-    private $connexion = null;
-    /** @var array<string,mixed> */
-    private $partages = [];
+    /** @var Conteneur */
+    private $conteneur;
 
     public function __construct(Requete $requete)
     {
         $this->requete = $requete;
+        $this->conteneur = new Conteneur();
     }
 
     /** La table des routes de l'application. */
@@ -65,10 +65,9 @@ abstract class Fabrique
 
     final public function connexion(): FabriqueConnexion
     {
-        if ($this->connexion === null) {
-            $this->connexion = $this->decrireConnexion();
-        }
-        return $this->connexion;
+        return $this->partage('connexion', function () {
+            return $this->decrireConnexion();
+        });
     }
 
     public function surveillance(): SurveillanceInterface
@@ -85,15 +84,32 @@ abstract class Fabrique
      * Memoise. Deux cas d'usage cables dans la meme requete partagent alors
      * le meme depot, donc la meme connexion -- et non deux.
      *
-     * @param callable(): mixed $construire
+     * @param callable(Conteneur): mixed $construire
      * @return mixed
      */
     final protected function partage(string $cle, callable $construire)
     {
-        if (!array_key_exists($cle, $this->partages)) {
-            $this->partages[$cle] = $construire();
+        if (!$this->conteneur->contient($cle)) {
+            $this->conteneur->definir($cle, $construire);
         }
-        return $this->partages[$cle];
+        return $this->conteneur->obtenir($cle);
+    }
+
+    /** Enregistre une fabrique dans le conteneur de cette requete. */
+    final protected function definirService(string $identifiant, callable $fabrique, bool $partagee = true)
+    {
+        $this->conteneur->definir($identifiant, $fabrique, $partagee);
+    }
+
+    /** Recupere un service enregistre sans exposer le conteneur a l'application. */
+    final protected function resoudreService(string $identifiant)
+    {
+        return $this->conteneur->obtenir($identifiant);
+    }
+
+    final protected function serviceDefini(string $identifiant): bool
+    {
+        return $this->conteneur->contient($identifiant);
     }
 
     /**

@@ -18,7 +18,7 @@ version longue — celle qu'on ouvre quand on se demande *pourquoi* une classe e
 | 3 | [`03-infrastructure.md`](03-infrastructure.md) | `FabriqueConnexion`, `DepotPdo`, `JetonJwt`, `JournalPdo`, `SurveillanceTimeout`, `AuthentificationDifferee` |
 | 4 | [`04-http.md`](04-http.md) | `Requete`, `Routeur`, `Aiguillage` |
 | 5 | [`05-presentation.md`](05-presentation.md) | `ReponseHttp`, `Authentificateur`, `PresentateurAbstrait`, `PresentateurCommun` |
-| 6 | [`06-composition.md`](06-composition.md) | `Fabrique`, la racine de composition |
+| 6 | [`06-composition.md`](06-composition.md) | `Fabrique` et `Conteneur`, la racine de composition |
 | 7 | [`07-tests.md`](07-tests.md) | `Verificateur` et les quatre doubles |
 | 8 | [`08-outils.md`](08-outils.md) | `verification.php`, `compat.php`, `lint`, harnais de caractérisation |
 | 9 | [`09-squelette.md`](09-squelette.md) | Le projet d'exemple, fichier par fichier |
