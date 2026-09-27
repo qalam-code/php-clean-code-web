@@ -115,6 +115,7 @@ abstract class PresentateurAbstrait
 {
     abstract public function traduire(ErreurMetier $erreur): ReponseHttp;
     public function panne(): ReponseHttp;                                      // 500
+    public function corpsInvalide(): ReponseHttp;                              // 400
     final protected function reponse(int $code, array $corps): ReponseHttp;
     protected function echec(int $code, string $statut, string $message): ReponseHttp;
 }

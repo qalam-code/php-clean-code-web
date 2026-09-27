@@ -345,6 +345,38 @@ $v->egal(
 );
 $v->egal(false, $actionAppele, 'corps JSON invalide : le cas d usage ne demarre pas');
 
+$presentateurBrise = new class extends PresentateurCommun {
+    public function corpsInvalide(): ReponseHttp
+    {
+        throw new RuntimeException('echec du presentateur');
+    }
+
+    public function panne(): ReponseHttp
+    {
+        throw new RuntimeException('echec du presentateur de panne');
+    }
+};
+$routeur->ajouter('presentateur-brise', function () {
+    return function () {
+        return new ReponseHttp(200, ['statut' => 'succes']);
+    };
+}, function () use ($presentateurBrise) {
+    return $presentateurBrise;
+}, ['POST']);
+$incidentsPresentateur = 0;
+$aAvecPresentateurBrise = new Aiguillage(
+    $routeur,
+    new PresentateurCommun(),
+    function () use (&$incidentsPresentateur) {
+        $incidentsPresentateur++;
+    }
+);
+$reponsePresentateurBrise = $aAvecPresentateurBrise->servir(
+    new Requete('POST', '/presentateur-brise', [], [], [], true)
+);
+$v->egal(500, $reponsePresentateurBrise->code(), 'presentateur en echec : reponse sure 500');
+$v->egal(2, $incidentsPresentateur, 'les echecs des deux presentateurs sont journalises');
+
 // ---------------------------------------------------------------------------
 $v->section('Declarabilite -- le piege qui a coute le plus cher');
 

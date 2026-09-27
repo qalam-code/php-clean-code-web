@@ -52,11 +52,18 @@ final class Aiguillage
 
     public function servir(Requete $requete): ReponseHttp
     {
-        $route = $this->routeur->resoudre($requete->chemin());
+        try {
+            $route = $this->routeur->resoudre($requete->chemin());
+        } catch (Throwable $e) {
+            $this->journaliser($e);
+            return $this->panneSecurisee($this->secours);
+        }
         if ($route === null) {
-            return $this->secours->traduire(
-                ErreurMetier::ressourceIntrouvable('endpoint ' . $requete->chemin())
-            );
+            return $this->rendre(function () use ($requete) {
+                return $this->secours->traduire(
+                    ErreurMetier::ressourceIntrouvable('endpoint ' . $requete->chemin())
+                );
+            }, $this->secours);
         }
         // Construit AVANT le try : sans presentateur, rien ne peut etre
         // rendu correctement. S'il echoue lui-meme, le secours prend le
@@ -64,30 +71,79 @@ final class Aiguillage
         try {
             $fabriquePresentateur = $route['presentateur'];
             $presentateur         = $fabriquePresentateur();
+            if (!$presentateur instanceof PresentateurAbstrait) {
+                throw new \UnexpectedValueException('Le presentateur de route est invalide.');
+            }
         } catch (Throwable $e) {
             $this->journaliser($e);
-            return $this->secours->panne();
+            return $this->panneSecurisee($this->secours);
         }
 
         if ($route['methodes'] !== [] && !in_array($requete->methode(), $route['methodes'], true)) {
-            return $presentateur->methodeNonAutorisee($route['methodes']);
+            return $this->rendre(function () use ($presentateur, $route) {
+                return $presentateur->methodeNonAutorisee($route['methodes']);
+            }, $presentateur);
         }
 
         try {
             if ($requete->corpsInvalide()) {
-                return $presentateur->corpsInvalide();
+                return $this->rendre(function () use ($presentateur) {
+                    return $presentateur->corpsInvalide();
+                }, $presentateur);
             }
             $fabriqueAction = $route['action'];
             $action         = $fabriqueAction();
-            return $action($requete);
+            $reponse = $action($requete);
+            if (!$reponse instanceof ReponseHttp) {
+                throw new \UnexpectedValueException('L action de route doit rendre une ReponseHttp.');
+            }
+            return $reponse;
         } catch (ErreurMetier $e) {
             // Attendu : le domaine a dit non. Pas un incident.
-            return $presentateur->traduire($e);
+            return $this->rendre(function () use ($presentateur, $e) {
+                return $presentateur->traduire($e);
+            }, $presentateur);
         } catch (Throwable $e) {
             // Inattendu : personne n'avait prevu ce cas.
             $this->journaliser($e);
-            return $presentateur->panne();
+            return $this->panneSecurisee($presentateur);
         }
+    }
+
+    /** Execute une traduction publique et retombe sur une panne sure si elle echoue. */
+    private function rendre(callable $traduire, PresentateurAbstrait $presentateur): ReponseHttp
+    {
+        try {
+            $reponse = $traduire();
+            if (!$reponse instanceof ReponseHttp) {
+                throw new \UnexpectedValueException('Un presentateur doit rendre une ReponseHttp.');
+            }
+            return $reponse;
+        } catch (Throwable $e) {
+            $this->journaliser($e);
+            return $this->panneSecurisee($presentateur);
+        }
+    }
+
+    /** Le presentateur de secours peut aussi echouer : le dernier recours est fixe. */
+    private function panneSecurisee(PresentateurAbstrait $presentateur): ReponseHttp
+    {
+        $cibles = [$presentateur];
+        if ($presentateur !== $this->secours) {
+            $cibles[] = $this->secours;
+        }
+        foreach ($cibles as $cible) {
+            try {
+                $reponse = $cible->panne();
+                if ($reponse instanceof ReponseHttp) {
+                    return $reponse;
+                }
+                throw new \UnexpectedValueException('La panne doit etre rendue en ReponseHttp.');
+            } catch (Throwable $e) {
+                $this->journaliser($e);
+            }
+        }
+        return new ReponseHttp(500, ['statut' => 'erreur', 'message' => 'erreur interne']);
     }
 
     private function journaliser(Throwable $e){
