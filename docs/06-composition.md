@@ -204,31 +204,15 @@ sans �tat ; un d�p�t porte la connexion, il doit �tre unique.
 
 ## 6.8 La configuration
 
-**Elle vient de l'environnement**, pas d'un fichier versionn� :
+Le squelette fournit un fichier .env.example. Composer le copie vers .env lors de la creation du projet. Le fichier .env est ignore par Git ; il contient les valeurs propres a chaque environnement.
 
-```apache
-SetEnv JWT_SECRET        une-valeur-aleatoire-longue
-SetEnv DB_HOTE           127.0.0.1
-SetEnv DB_BASE           exemple
-SetEnv DB_UTILISATEUR    exemple
-SetEnv DB_MOT_DE_PASSE   ...
-SetEnv BASE_URI          /exemple
-```
+    BASE_URI=
+    DB_HOTE=127.0.0.1
+    DB_BASE=exemple
+    DB_UTILISATEUR=root
+    DB_MOT_DE_PASSE=
+    JWT_SECRET=
 
-> **? Pas de secret par d�faut.** Le squelette l�ve une exception si
-> `JWT_SECRET` est absent :
->
-> ```php
-> if ($secret === '') {
->     throw new \RuntimeException('JWT_SECRET absent de la configuration');
-> }
-> ```
->
-> Une valeur de repli � `secret`, `changeme`, `SECRET` � finit toujours en
-> production, et alors n'importe qui peut forger un jeton valide pour n'importe
-> quel compte. **Mieux vaut refuser de d�marrer.**
+Le chargeur du squelette lit ce fichier sans dependance externe. Une variable deja fournie par Apache, le vhost ou le systeme reste prioritaire sur .env. En production, definissez les secrets directement dans l'environnement du serveur.
 
-Pour les autres r�glages (h�te, nom de base), un repli est acceptable : une
-mauvaise valeur se manifeste imm�diatement par une erreur de connexion, pas par
-une faille silencieuse.
-
+JWT_SECRET reste volontairement vide dans le modele. Generez une cle aleatoire et renseignez-la avant d'utiliser l'authentification. Sans cette cle, le squelette refuse de construire le service de jetons ; aucun secret de secours n'est utilise.

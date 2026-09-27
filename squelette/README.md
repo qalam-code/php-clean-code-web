@@ -23,10 +23,11 @@ Puis, dans l'ordre :
 
 1. **Espace de noms** — remplacez `App\Exemple\` par le votre dans `src/`,
    `autoload.php` et `composer.json`.
-2. **Configuration** — `public/.htaccess` : `RewriteBase`, puis les `SetEnv`.
-   **`JWT_SECRET` n'a pas de valeur par defaut**, et c'est voulu : une valeur
-   de repli finit toujours en production, et alors n'importe qui peut forger un
-   jeton valide.
+2. **Configuration** — Composer copie `.env.example` vers `.env`. Renseignez-y
+   `JWT_SECRET` avec une valeur aleatoire et adaptez les parametres de base de
+   donnees. Le fichier `.env` est ignore par Git ; en production, privilegiez
+   les variables du serveur ou du vhost. Ajustez `RewriteBase` dans
+   `public/.htaccess` si l'application est installee dans un sous-dossier.
 3. **Domaine** — remplacez `Facture` par vos entites, `ErreurFacturation` par
    vos types d'erreur.
 4. **Routes** — declarez les chemins et methodes dans `routes/api.php` ; le cablage des controleurs et presentateurs reste dans `src/Fabrique.php`.

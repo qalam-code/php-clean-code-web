@@ -52,13 +52,16 @@ Pour travailler depuis une copie locale du dépôt :
 ```
 cp -r squelette /chemin/vers/mon-projet
 cd /chemin/vers/mon-projet
+cp .env.example .env
 ```
 
 Puis, dans la copie :
 
 1. Renommez l'espace de noms `App\Exemple\` en celui de votre projet
    (`src/`, `autoload.php`, `composer.json`).
-2. Ajustez `public/.htaccess` : `RewriteBase`, et les `SetEnv` de configuration.
+2. Configurez `.env` (copie automatique de `.env.example`). En production,
+   definissez les variables dans le vhost. Ajustez aussi `RewriteBase` dans
+   `public/.htaccess`.
 3. Remplacez le domaine d'exemple (facture, utilisateur) par le votre.
 4. Declarez les chemins et methodes dans `routes/api.php` ; cablez les services dans `src/Fabrique.php`.
 

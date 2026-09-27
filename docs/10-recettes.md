@@ -9,6 +9,7 @@ Les gestes courants, dans l'ordre o� on les rencontre.
 ```bash
 cp -r squelette /chemin/vers/mon-projet
 cd /chemin/vers/mon-projet
+cp .env.example .env
 php tests/architecture/equivalence.php     # doit afficher 43 conformes
 ```
 
@@ -24,9 +25,9 @@ Puis, dans l'ordre :
 grep -rl 'App\\Exemple' . | xargs sed -i 's/App\\\\Exemple/App\\\\MonProjet/g'
 ```
 
-**2. La configuration.** `public/.htaccess` : `RewriteBase`, puis les `SetEnv`.
+**2. La configuration.** Composer copie .env.example vers .env lors de create-project. Si vous avez copie le squelette a la main, creez .env avec `cp .env.example .env`. Renseignez les acces a la base et generez JWT_SECRET :
 
-> **?** `JWT_SECRET` n'a pas de valeur par d�faut, et c'est voulu. G�n�rez-la :
+> **JWT_SECRET reste vide dans le modele** : generez une valeur aleatoire et renseignez-la dans .env avant d'utiliser l'authentification.
 > ```bash
 > php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
 > ```
