@@ -22,6 +22,6 @@ php -S 127.0.0.1:8000 -t exemples/public
 
 Ouvrez `http://127.0.0.1:8000/bonjour/Amadou` ou `http://127.0.0.1:8000/bonjour`, puis soumettez le formulaire. Un nom vide ou de plus de 100 caracteres est refuse avec le statut HTTP 422 et un message affiche dans le formulaire.
 
-`MoteurVue::rendreAvecLayout()` place la vue de la page dans un layout partage. Le layout peut composer des vues partielles avec `MoteurVue::rendre()`. Les valeurs dynamiques doivent etre affichees avec `$this->echapper(...)`; le contenu HTML de la vue interne est insere par le layout comme contenu genere par l application.
+Chaque vue rendue avec `MoteurVue::rendreAvecLayout()` charge ses actifs par convention : `bonjour.html` utilise `public/assets/vues/bonjour.css` et `public/assets/vues/bonjour.js`. Les variables HTML s ecrivent `{{ nom }}` et sont echappees automatiquement. Le layout produit les balises CSS et JavaScript. La classe `vue-bonjour` sur le corps de page permet de limiter les selecteurs CSS a cette vue. Dans une application, le chemin URL des actifs se configure avec le second argument de `MoteurVue`, par exemple `new MoteurVue($repertoireVues, '/mon-app/assets/vues')`.
 
-Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple, vues et layouts PHP. La validation des champs reste une responsabilite de l application.
+Les vues `.html` utilisent des marqueurs de variables simples, automatiquement echappes. Les vues `.php` restent disponibles pour les vues qui ont besoin de logique ou de composition. Le CSS est charge uniquement sur la vue correspondante, mais reste du CSS navigateur classique ; la classe de page permet de limiter ses selecteurs.
