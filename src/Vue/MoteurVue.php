@@ -19,8 +19,23 @@ final class MoteurVue
         $this->repertoire = rtrim($repertoireReel, DIRECTORY_SEPARATOR);
     }
 
-    /** @param array<string,mixed> $donnees */
+    /** Rend une vue seule ou une vue partielle. */
     public function rendre(string $nomVue, array $donnees = []): string
+    {
+        return $this->rendreFichier($nomVue, $donnees);
+    }
+
+    /** Rend le contenu d'une vue dans un layout qui recoit la variable $contenu. */
+    public function rendreAvecLayout(string $nomVue, string $layout, array $donnees = []): string
+    {
+        $contenu = $this->rendreFichier($nomVue, $donnees);
+        $donneesLayout = $donnees;
+        $donneesLayout['contenu'] = $contenu;
+        return $this->rendreFichier($layout, $donneesLayout);
+    }
+
+    /** @param array<string,mixed> $donnees */
+    private function rendreFichier(string $nomVue, array $donnees): string
     {
         if (!preg_match('/\A[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*\z/', $nomVue)) {
             throw new RuntimeException('Nom de vue invalide.');

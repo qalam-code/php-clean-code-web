@@ -13,10 +13,11 @@ return function (MoteurVue $vues): array {
         if (!is_string($nom)) {
             $nom = '';
         }
-        return new ReponseHtml(200, $vues->rendre('bonjour', [
+        return new ReponseHtml(200, $vues->rendreAvecLayout('bonjour', 'layouts/principal', [
             'nom' => $nom,
             'nomAffiche' => $nom === '' ? 'visiteur' : $nom,
             'erreur' => null,
+            'titre' => 'Bonjour',
         ]));
     };
 
@@ -43,10 +44,11 @@ return function (MoteurVue $vues): array {
         if ($erreur !== null) {
             $code = 422;
         }
-        return new ReponseHtml($code, $vues->rendre('bonjour', [
+        return new ReponseHtml($code, $vues->rendreAvecLayout('bonjour', 'layouts/principal', [
             'nom' => $nom,
             'nomAffiche' => $erreur === null ? $nom : '',
             'erreur' => $erreur,
+            'titre' => 'Bonjour',
         ]));
     };
 

@@ -22,6 +22,6 @@ php -S 127.0.0.1:8000 -t exemples/public
 
 Ouvrez `http://127.0.0.1:8000/bonjour/Amadou` ou `http://127.0.0.1:8000/bonjour`, puis soumettez le formulaire. Un nom vide ou de plus de 100 caracteres est refuse avec le statut HTTP 422 et un message affiche dans le formulaire.
 
-Le point d'entree charge les routes depuis `exemples/routes.php`, le routeur appelle l'action, et le moteur rend `exemples/vues/bonjour.php`. Les valeurs dynamiques doivent etre affichees avec `$this->echapper(...)`.
+`MoteurVue::rendreAvecLayout()` place la vue de la page dans un layout partage. Le layout peut composer des vues partielles avec `MoteurVue::rendre()`. Les valeurs dynamiques doivent etre affichees avec `$this->echapper(...)`; le contenu HTML de la vue interne est insere par le layout comme contenu genere par l application.
 
-Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple et vues PHP. La validation des champs reste une responsabilite de l application ; le paquet fournit la requete web qui donne acces aux valeurs soumises. La gestion centrale des erreurs inattendues est assuree par `AiguillageWeb` : elle journalise l incident et rend une page 500 sans exposer son detail. Les layouts viendront ensuite.
+Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple, vues et layouts PHP. La validation des champs reste une responsabilite de l application.
