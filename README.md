@@ -14,14 +14,14 @@ Le paquet API doit etre disponible dans Packagist, ou configure comme depot VCS 
 
 ## Premiere route HTML
 
-L'exemple expose `GET /bonjour` avec `?nom=Amadou`, ainsi que `GET /bonjour/{nom}` :
+L'exemple expose `GET /bonjour`, `GET /bonjour/{nom}` et un formulaire `POST /bonjour` :
 
 ```sh
 php -S 127.0.0.1:8000 -t exemples/public
 ```
 
-Ouvrez `http://127.0.0.1:8000/bonjour?nom=Amadou` ou `http://127.0.0.1:8000/bonjour/Amadou`.
+Ouvrez `http://127.0.0.1:8000/bonjour/Amadou` ou `http://127.0.0.1:8000/bonjour`, puis soumettez le formulaire. Un nom vide ou de plus de 100 caracteres est refuse avec le statut HTTP 422 et un message affiche dans le formulaire.
 
 Le point d'entree charge les routes depuis `exemples/routes.php`, le routeur appelle l'action, et le moteur rend `exemples/vues/bonjour.php`. Les valeurs dynamiques doivent etre affichees avec `$this->echapper(...)`.
 
-Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methode HTTP et vues PHP simples. Les formulaires, layouts et gestion centralisee des erreurs viendront apres validation de cette base.
+Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple et vues PHP. Les layouts et la gestion centralisee des erreurs viendront ensuite.
