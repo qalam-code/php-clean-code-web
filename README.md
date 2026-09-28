@@ -10,7 +10,7 @@ Depuis la racine de ce depot :
 composer install
 ```
 
-Le paquet API doit etre disponible dans Packagist, ou configure comme depot VCS dans Composer. Le code web utilise sa classe `PhpCleanCode\\Http\\Requete` pour recevoir la requete HTTP.
+Le paquet API doit etre disponible dans Packagist, ou configure comme depot VCS dans Composer. Le routeur web reutilise `PhpCleanCode\\Http\\Requete`, qui expose methode, chemin, entetes, query string et donnees du corps, y compris les formulaires classiques. L action de route prepare ensuite les donnees destinees a la vue.
 
 ## Premiere route HTML
 
@@ -24,4 +24,4 @@ Ouvrez `http://127.0.0.1:8000/bonjour/Amadou` ou `http://127.0.0.1:8000/bonjour`
 
 Le point d'entree charge les routes depuis `exemples/routes.php`, le routeur appelle l'action, et le moteur rend `exemples/vues/bonjour.php`. Les valeurs dynamiques doivent etre affichees avec `$this->echapper(...)`.
 
-Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple et vues PHP. Les layouts et la gestion centralisee des erreurs viendront ensuite.
+Comportement actuel volontairement limite : chemins statiques ou avec parametres simples, methodes HTTP, formulaire HTML simple et vues PHP. La validation des champs reste une responsabilite de l application ; le paquet fournit la requete web qui donne acces aux valeurs soumises. La gestion centrale des erreurs inattendues est assuree par `AiguillageWeb` : elle journalise l incident et rend une page 500 sans exposer son detail. Les layouts viendront ensuite.
