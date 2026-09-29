@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace QalamCode\PhpCleanCodeWeb\Http;
 
 use PhpCleanCode\Http\Requete;
-use QalamCode\PhpCleanCodeWeb\Presentation\ReponseHtml;
+use QalamCode\PhpCleanCodeWeb\Presentation\ReponseWeb;
 use UnexpectedValueException;
 
 /** Route des chemins vers des actions qui produisent du HTML. */
@@ -18,7 +18,7 @@ final class RouteurWeb
         $this->routes = $routes;
     }
 
-    public function servir(Requete $requete): ReponseHtml
+    public function servir(Requete $requete): ReponseWeb
     {
         $cheminDemande = $this->normaliserChemin($requete->chemin());
         $methodesAutorisees = [];
@@ -45,8 +45,8 @@ final class RouteurWeb
             $methodesAutorisees = array_merge($methodesAutorisees, $methodes);
             if ($methodes === [] || in_array($requete->methode(), $methodes, true)) {
                 $reponse = call_user_func($route['action'], $requete, $parametres);
-                if (!$reponse instanceof ReponseHtml) {
-                    throw new UnexpectedValueException('Une route web doit retourner une ReponseHtml.');
+                if (!$reponse instanceof ReponseWeb) {
+                    throw new UnexpectedValueException('Une route web doit retourner une ReponseWeb.');
                 }
                 return $reponse;
             }

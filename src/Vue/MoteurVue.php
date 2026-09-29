@@ -6,7 +6,7 @@ namespace QalamCode\PhpCleanCodeWeb\Vue;
 use InvalidArgumentException;
 use RuntimeException;
 
-/** Charge des vues PHP ou HTML et leurs actifs depuis des repertoires fixes. */
+/** Charge des composants de vues PHP/HTML avec leurs actifs associes. */
 final class MoteurVue
 {
     private $repertoire;
@@ -25,21 +25,21 @@ final class MoteurVue
         $this->baseActifs = '/' . trim($baseActifs, '/');
     }
 
-    /** Rend une vue seule ou une vue partielle. */
+    /** Rend une vue seule ou une vue partielle PHP. */
     public function rendre(string $nomVue, array $donnees = []): string
     {
         return $this->rendreFichier($nomVue, $donnees);
     }
 
-    /** Rend la vue dans un layout et lui associe ses actifs CSS/JS. */
+    /** Rend la vue dans un layout et associe les actifs du composant. */
     public function rendreAvecLayout(string $nomVue, string $layout, array $donnees = []): string
     {
         $contenu = $this->rendreFichier($nomVue, $donnees);
         $donneesLayout = $donnees;
         $donneesLayout['contenu'] = $contenu;
         $donneesLayout['classeVue'] = 'vue-' . str_replace('/', '-', $nomVue);
-        $donneesLayout['actifsCss'] = [$this->baseActifs . '/' . $nomVue . '.css'];
-        $donneesLayout['actifsJs'] = [$this->baseActifs . '/' . $nomVue . '.js'];
+        $donneesLayout['actifsCss'] = [$this->baseActifs . '/' . $nomVue . '/style.css'];
+        $donneesLayout['actifsJs'] = [$this->baseActifs . '/' . $nomVue . '/script.js'];
         return $this->rendreFichier($layout, $donneesLayout);
     }
 
@@ -50,8 +50,13 @@ final class MoteurVue
             throw new RuntimeException('Nom de vue invalide.');
         }
         $base = $this->repertoire . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $nomVue);
-        $cheminHtml = realpath($base . '.html');
-        $cheminPhp = realpath($base . '.php');
+        $baseComposant = $base . DIRECTORY_SEPARATOR . 'vue';
+        $cheminHtml = realpath($baseComposant . '.html');
+        $cheminPhp = realpath($baseComposant . '.php');
+        if ($cheminHtml === false && $cheminPhp === false) {
+            $cheminHtml = realpath($base . '.html');
+            $cheminPhp = realpath($base . '.php');
+        }
         if ($cheminHtml !== false && $cheminPhp !== false) {
             throw new RuntimeException('La vue ne peut pas avoir simultanement une version HTML et PHP : ' . $nomVue);
         }
@@ -96,7 +101,6 @@ final class MoteurVue
         }
     }
 
-    /** Echappement a utiliser pour toute valeur non fiable affichee en HTML. */
     public function echapper($valeur): string
     {
         return htmlspecialchars((string) $valeur, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
