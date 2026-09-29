@@ -2,54 +2,57 @@
 declare(strict_types=1);
 
 use PhpCleanCode\Http\Requete;
+use QalamCode\PhpCleanCodeWeb\Http\GestionnaireCsrf;
 use QalamCode\PhpCleanCodeWeb\Presentation\ReponseHtml;
+use QalamCode\PhpCleanCodeWeb\Validation\ValidateurDonnees;
 use QalamCode\PhpCleanCodeWeb\Vue\MoteurVue;
 
-return function (MoteurVue $vues): array {
-    $saluer = function (Requete $requete, array $parametres) use ($vues): ReponseHtml {
+return function (MoteurVue $vues, GestionnaireCsrf $csrf, ValidateurDonnees $validateur): array {
+    $donneesSecurite = function () use ($csrf): array {
+        return [
+            'csrfToken' => $csrf->jeton(),
+            'csrfField' => $csrf->cleFormulaire(),
+        ];
+    };
+
+    $saluer = function (Requete $requete, array $parametres) use ($vues, $donneesSecurite): ReponseHtml {
         $nom = isset($parametres['nom'])
             ? $parametres['nom']
             : $requete->parametre('nom', '');
         if (!is_string($nom)) {
             $nom = '';
         }
-        return new ReponseHtml(200, $vues->rendreAvecLayout('bonjour', 'layouts/principal', [
+        return new ReponseHtml(200, $vues->rendreAvecLayout('bonjour', 'layouts/principal', array_merge([
             'nom' => $nom,
             'nomAffiche' => $nom === '' ? 'visiteur' : $nom,
             'erreur' => null,
             'titre' => 'Bonjour',
-        ]));
+        ], $donneesSecurite())));
     };
 
-    $traiterFormulaire = function (Requete $requete) use ($vues): ReponseHtml {
-        $nom = $requete->parametre('nom');
-        $erreur = null;
-        $code = 200;
-
+    $traiterFormulaire = function (Requete $requete, array $parametres) use ($vues, $donneesSecurite, $validateur): ReponseHtml {
+        $resultat = $validateur->valider($requete->corps(), [
+            'nom' => [
+                'required' => true,
+                'string' => true,
+                'trim' => true,
+                'max' => 100,
+            ],
+        ], [
+            'nom' => 'Veuillez saisir un nom valide, de 1 a 100 caracteres.',
+        ]);
+        $nom = $resultat->donnees()['nom'];
         if (!is_string($nom)) {
             $nom = '';
-            $erreur = 'Veuillez saisir un nom valide.';
-        } else {
-            $nom = trim($nom);
-            $longueur = preg_match_all('/./us', $nom, $caracteres);
-            if ($nom === '') {
-                $erreur = 'Le nom est obligatoire.';
-            } elseif ($longueur === false) {
-                $erreur = 'Le nom contient un encodage invalide.';
-            } elseif ($longueur > 100) {
-                $erreur = 'Le nom ne doit pas depasser 100 caracteres.';
-            }
         }
-
-        if ($erreur !== null) {
-            $code = 422;
-        }
-        return new ReponseHtml($code, $vues->rendreAvecLayout('bonjour', 'layouts/principal', [
+        $erreur = $resultat->premiereErreur();
+        $code = $resultat->estValide() ? 200 : 422;
+        return new ReponseHtml($code, $vues->rendreAvecLayout('bonjour', 'layouts/principal', array_merge([
             'nom' => $nom,
-            'nomAffiche' => $erreur === null ? $nom : '',
+            'nomAffiche' => $resultat->estValide() ? $nom : '',
             'erreur' => $erreur,
             'titre' => 'Bonjour',
-        ]));
+        ], $donneesSecurite())));
     };
 
     return [
@@ -61,6 +64,7 @@ return function (MoteurVue $vues): array {
         [
             'chemin' => '/bonjour',
             'methodes' => ['POST'],
+            'csrf' => true,
             'action' => $traiterFormulaire,
         ],
         [

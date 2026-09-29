@@ -4,18 +4,24 @@ declare(strict_types=1);
 namespace QalamCode\PhpCleanCodeWeb\Http;
 
 use PhpCleanCode\Http\Requete;
+use QalamCode\PhpCleanCodeWeb\Presentation\ReponseHtml;
 use QalamCode\PhpCleanCodeWeb\Presentation\ReponseWeb;
 use UnexpectedValueException;
 
-/** Route des chemins vers des actions qui produisent du HTML. */
+/** Route des chemins vers des actions qui produisent une reponse web. */
 final class RouteurWeb
 {
     private $routes;
+    private $csrf;
 
     /** @param array<int,array{chemin:string,methodes:array<int,string>,action:callable}> $routes */
-    public function __construct(array $routes)
+    public function __construct(array $routes, $csrf = null)
     {
+        if ($csrf !== null && !($csrf instanceof GestionnaireCsrf)) {
+            throw new \InvalidArgumentException('Le protecteur CSRF doit etre un GestionnaireCsrf.');
+        }
         $this->routes = $routes;
+        $this->csrf = $csrf;
     }
 
     public function servir(Requete $requete): ReponseWeb
@@ -44,6 +50,20 @@ final class RouteurWeb
             }
             $methodesAutorisees = array_merge($methodesAutorisees, $methodes);
             if ($methodes === [] || in_array($requete->methode(), $methodes, true)) {
+                $csrfRequis = array_key_exists('csrf', $route)
+                    ? $route['csrf']
+                    : !in_array($requete->methode(), ['GET', 'HEAD', 'OPTIONS'], true);
+                if (!is_bool($csrfRequis)) {
+                    throw new UnexpectedValueException('La configuration CSRF doit etre booleenne.');
+                }
+                if ($csrfRequis) {
+                    if ($this->csrf === null) {
+                        throw new UnexpectedValueException('Un GestionnaireCsrf est requis pour cette route.');
+                    }
+                    if (!$this->csrf->valider($requete)) {
+                        return new ReponseHtml(403, '<h1>403 - Requete refusee</h1><p>Jeton CSRF invalide.</p>');
+                    }
+                }
                 $reponse = call_user_func($route['action'], $requete, $parametres);
                 if (!$reponse instanceof ReponseWeb) {
                     throw new UnexpectedValueException('Une route web doit retourner une ReponseWeb.');
@@ -84,7 +104,6 @@ final class RouteurWeb
             $position = $debut + strlen($balise[0]);
         }
         $expression .= preg_quote(substr($modele, $position), '~');
-
         if (!preg_match('~\A' . $expression . '\z~', $chemin, $captures)) {
             return null;
         }

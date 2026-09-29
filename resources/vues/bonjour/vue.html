@@ -1,6 +1,7 @@
 <h1>Bonjour, {{ nomAffiche }} !</h1>
 <p role="alert">{{ erreur }}</p>
 <form method="post" action="/bonjour">
+    <input type="hidden" name="{{ csrfField }}" value="{{ csrfToken }}">
     <label for="nom">Votre nom</label>
     <input id="nom" name="nom" type="text" maxlength="100" required value="{{ nom }}">
     <button type="submit">Dire bonjour</button>

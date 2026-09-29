@@ -1,20 +1,10 @@
 # php-clean-code-web
 
-Extension web de `qalam-code/php-clean-code`, construite autour d'un rendu HTML et de vues PHP.
-
-## Installation pour le developpement
-
-Depuis la racine de ce depot :
-
-```sh
-composer install
-```
-
-Le paquet API doit etre disponible dans Packagist, ou configure comme depot VCS dans Composer. Le routeur web reutilise `PhpCleanCode\\Http\\Requete`, qui expose methode, chemin, entetes, query string et donnees du corps, y compris les formulaires classiques.
+Extension web de `qalam-code/php-clean-code`, construite autour d'un rendu HTML et de composants de vues.
 
 ## Composants de vues
 
-Chaque composant est garde dans un repertoire unique, hors du repertoire public :
+Chaque composant reste dans un dossier hors du répertoire public :
 
 ```text
 resources/vues/bonjour/
@@ -23,14 +13,36 @@ resources/vues/bonjour/
   script.js
 ```
 
-`MoteurVue::rendreAvecLayout('bonjour', ...)` rend `vue.html`, puis associe automatiquement les actifs. `ServeurActifsVue` les sert par les URL `/assets/vues/bonjour/style.css` et `/assets/vues/bonjour/script.js`. Le serveur ne permet pas de telecharger `vue.html` ni d autres fichiers du repertoire. Les variables HTML utilisent `{{ nom }}` et sont echappees automatiquement.
+`MoteurVue::rendreAvecLayout('bonjour', ...)` rend `vue.html` et associe ses actifs. `ServeurActifsVue` sert uniquement `style.css` et `script.js` par le point d entree web ; les sources des vues ne sont pas exposées. Les marqueurs `{{ nom }}` dans le HTML sont remplacés par des valeurs échappées.
 
+## Protection CSRF
+
+Les méthodes `POST`, `PUT`, `PATCH` et `DELETE` sont protégées par défaut. Une route peut choisir explicitement `csrf => true` ou `csrf => false`. La route POST Bonjour active la protection ; le formulaire contient un jeton lié à la session. `GestionnaireCsrf` accepte aussi un en-tête AJAX configurable.
+
+Le port `StockageSession` permet de remplacer le stockage. `SessionPhp` fournit l’adaptateur PHP natif, active le mode strict et un cookie HttpOnly ; il choisit Secure selon HTTPS. SameSite=Lax est ajouté à partir de PHP 7.3. Le jeton synchronisé reste le contrôle CSRF principal.
+
+## Validation des formulaires
+
+`ValidateurDonnees` applique des regles reutilisables a un tableau de donnees. Les regles disponibles sont `required`, `string`, `trim`, `min`, `max`, `email` et `callback`. `ResultatValidation` expose les donnees normalisees, les erreurs par champ, `estValide()` et `premiereErreur()`. Les messages peuvent etre adaptes champ par champ.
+
+```php
+$resultat = $validateur->valider($requete->corps(), [
+    'nom' => ['required' => true, 'string' => true, 'trim' => true, 'max' => 100],
+], [
+    'nom' => 'Saisissez un nom de 1 a 100 caracteres.',
+]);
+
+if (!$resultat->estValide()) {
+    $erreurs = $resultat->erreurs();
+}
+```
+
+L'exemple `/bonjour` utilise ce validateur et reaffiche les erreurs avec le statut HTTP 422. Les messages sont echappes par le moteur de vues HTML.
 ## Exemple
 
 ```sh
+composer install
 php -S 127.0.0.1:8000 -t exemples/public
 ```
 
-Ouvrez `http://127.0.0.1:8000/bonjour/Amadou` ou `http://127.0.0.1:8000/bonjour`, puis soumettez le formulaire. Un nom vide ou de plus de 100 caracteres est refuse avec le statut HTTP 422.
-
-Le CSS et le JavaScript restent standards et ne sont pas automatiquement encapsules comme dans Angular. Le layout ajoute une classe telle que `vue-bonjour` au `body` pour aider a limiter les selecteurs.
+Ouvrez `http://127.0.0.1:8000/bonjour` puis soumettez le formulaire. Une saisie invalide retourne 422 ; un jeton CSRF absent ou incorrect retourne 403 avant l appel de l action.
