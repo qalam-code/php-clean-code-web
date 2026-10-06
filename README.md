@@ -38,6 +38,11 @@ if (!$resultat->estValide()) {
 ```
 
 L'exemple `/bonjour` utilise ce validateur et reaffiche les erreurs avec le statut HTTP 422. Les messages sont echappes par le moteur de vues HTML.
+
+## Formulaires HTML et redirection
+
+Apres un `POST`, si l'action retourne une `ReponseHtml` avec un statut de succes (`2xx`), `RouteurWeb` repond par une redirection HTTP `303` vers le meme chemin. Le navigateur effectue alors un `GET`, ce qui evite de renvoyer le formulaire lors d'un rafraichissement. Les reponses HTML d'erreur, comme le statut 422 de validation, restent affichees directement. Les autres types de reponse, notamment les reponses JSON utilisees par des appels AJAX, ne sont pas rediriges.
+
 ## Exemple
 
 ```sh
