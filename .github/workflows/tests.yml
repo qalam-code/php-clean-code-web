@@ -7,7 +7,7 @@ on:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Installer PHP et Composer
         uses: shivammathur/setup-php@v2
@@ -35,4 +35,4 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Exécuter la suite
-        run: composer test
+        run: composer run-script test
