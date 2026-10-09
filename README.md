@@ -10,6 +10,19 @@ Le paquet web fournit des mécanismes de présentation ; le domaine et les cas d
 
 Le [guide d'architecture Web](ARCHITECTURE.md) complète ce README avec le rôle des composants et le parcours d'une requête. Le README de `phpCleanCode` renvoie à son chapitre détaillé sur les principes du socle API.
 
+## Feuille de route
+
+Le framework fournit déjà une base web pédagogique : routes, contrôleurs, cas d’usage, vues, sessions, protection CSRF, middleware et validation simple. Les évolutions ci-dessous sont des pistes ordonnées pour élargir les types d’applications réalisables. Elles ne sont pas encore toutes disponibles dans la version actuelle et chaque application pourra choisir ses propres adaptateurs.
+
+1. **Persistance et migrations de base de données** — définir des ports adaptés aux besoins des cas d’usage, puis proposer un adaptateur concret, par exemple avec PDO. Cela permettra de conserver et retrouver les données sans faire dépendre le domaine d’un moteur de base de données. Les migrations aideront à faire évoluer le schéma de données de manière reproductible.
+2. **Authentification et autorisations complètes** — documenter et compléter le parcours d’inscription, de connexion, de déconnexion et de récupération d’identité. L’adaptateur HTTP pourra protéger une route par middleware ; les règles d’autorisation métier resteront dans les cas d’usage ou le domaine. Cela donnera un exemple sûr sans transformer le middleware en couche métier.
+3. **Configuration et variables d’environnement** — proposer une manière cohérente de charger et valider les paramètres d’une application selon son environnement. Cela évitera de coder en dur les secrets et les paramètres propres au déploiement, tout en gardant la configuration explicite.
+4. **Entrées HTTP avancées** — traiter les fichiers téléversés et les autres formes de requête web avec des objets adaptés, puis les convertir en données utilisables par l’application. Cela permettra de construire des formulaires plus complets tout en isolant les détails HTTP.
+5. **Tests d’intégration et exemples d’application** — compléter les tests unitaires par des tests couvrant le câblage réel, les adaptateurs et les échanges HTTP, puis maintenir un exemple d’application représentatif. Cela aidera les utilisateurs à valider leurs choix d’architecture et à repérer les régressions.
+6. **Préparation à une version stable 1.0** — préciser les contrats publics, les limites de compatibilité PHP, les consignes de déploiement et les règles de versionnement. Une version 1.0 sera pertinente quand les parcours principaux seront documentés, testés sur les versions PHP annoncées et accompagnés d’une procédure de mise à jour claire.
+
+Cette feuille de route décrit une progression possible, pas une liste de dépendances obligatoires. Le principe reste de garder le cœur petit et de fournir des ports et adaptateurs que l’application peut remplacer.
+
 ## Installation avec Composer
 
 En attendant la publication sur Packagist, l'application consommatrice doit déclarer les deux dépôts GitHub VCS dans son propre projet. Lancez ces commandes depuis le dossier de l'application :
