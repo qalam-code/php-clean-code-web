@@ -17,5 +17,8 @@
         "psr-4": {
             "QalamCode\\PhpCleanCodeWeb\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "php tests/run.php"
     }
 }
