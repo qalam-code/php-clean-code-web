@@ -5,7 +5,11 @@ namespace QalamCode\PhpCleanCodeWeb\Validation;
 
 use InvalidArgumentException;
 
-/** Validation de tableaux d'entree avec regles declaratives. */
+/**
+ * Validation de tableaux d'entree avec regles declaratives.
+ * La validation ne convertit pas les types : elle retourne les valeurs reçues,
+ * avec trim applique si demande, et les erreurs detectees.
+ */
 final class ValidateurDonnees
 {
     /**
@@ -24,12 +28,14 @@ final class ValidateurDonnees
                 throw new InvalidArgumentException('Chaque champ doit avoir un nom et une liste de regles.');
             }
             $valeur = array_key_exists($champ, $entree) ? $entree[$champ] : null;
+            // La normalisation trim est explicite et s'applique avant required et les autres regles.
             if (($reglesChamp['trim'] ?? false) === true && is_string($valeur)) {
                 $valeur = trim($valeur);
             }
             $donneesValides[$champ] = $valeur;
 
             $message = null;
+            // Une valeur absente ou vide ne declenche pas les regles de format facultatives.
             $present = $valeur !== null && $valeur !== '';
             if (($reglesChamp['required'] ?? false) === true && !$present) {
                 $message = 'Ce champ est obligatoire.';
@@ -38,6 +44,7 @@ final class ValidateurDonnees
             } elseif (($reglesChamp['string'] ?? false) === true && !is_string($valeur)) {
                 $message = 'Ce champ doit etre du texte.';
             } elseif (is_string($valeur)) {
+                // Le modificateur u compte les caracteres Unicode, pas les octets UTF-8.
                 $longueur = preg_match_all('/./us', $valeur, $caracteres);
                 if ($longueur === false) {
                     $message = 'Ce texte contient un encodage invalide.';
@@ -54,6 +61,7 @@ final class ValidateurDonnees
                 if (!is_callable($reglesChamp['callback'])) {
                     throw new InvalidArgumentException('La regle callback de ' . $champ . ' doit etre appelable.');
                 }
+                // La regle personnalisee ne s'execute qu'apres le succes des regles integrees.
                 $resultat = call_user_func($reglesChamp['callback'], $valeur, $donneesValides);
                 if ($resultat !== true) {
                     $message = is_string($resultat) ? $resultat : 'Ce champ est invalide.';
@@ -68,6 +76,7 @@ final class ValidateurDonnees
 
     private function limite($valeur, string $champ): int
     {
+        // Une configuration de regle incorrecte est une erreur de programmation, pas une erreur utilisateur.
         if (!is_int($valeur) || $valeur < 0) {
             throw new InvalidArgumentException('La limite de ' . $champ . ' doit etre un entier positif ou nul.');
         }

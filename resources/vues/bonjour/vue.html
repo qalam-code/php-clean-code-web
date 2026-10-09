@@ -1,4 +1,5 @@
 <h1>Bonjour, {{ nomAffiche }} !</h1>
+<p role="status">{{ messageSucces }}</p>
 <p role="alert">{{ erreur }}</p>
 <form method="post" action="/bonjour">
     <input type="hidden" name="{{ csrfField }}" value="{{ csrfToken }}">

@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace QalamCode\PhpCleanCodeWeb\Validation;
 
-/** Resultat stable d'une validation de formulaire. */
+/**
+ * Resultat stable d'une validation de formulaire.
+ * L'appelant doit verifier estValide() avant d'utiliser les donnees pour une action metier.
+ */
 final class ResultatValidation
 {
     private $donnees;
@@ -33,6 +36,7 @@ final class ResultatValidation
 
     public function premiereErreur()
     {
+        // Retourne la premiere erreur dans l'ordre des champs valides, ou null si aucune erreur.
         foreach ($this->erreurs as $erreur) {
             return $erreur;
         }
