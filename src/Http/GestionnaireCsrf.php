@@ -17,7 +17,7 @@ use QalamCode\PhpCleanCodeWeb\Application\Port\StockageSession;
 final class GestionnaireCsrf
 {
     // Cle interne stable, distincte du nom public du champ de formulaire.
-    private const CLE_SESSION = '_qalam_code_web_csrf';
+    private static $cleSession = '_qalam_code_web_csrf';
     private $cleFormulaire;
     private $nomEntete;
     // L'interface de stockage garde ce composant indépendant de l'implémentation des sessions PHP.
@@ -48,11 +48,11 @@ final class GestionnaireCsrf
      */
     public function jeton(): string
     {
-        $jeton = $this->session->lire(self::CLE_SESSION);
+        $jeton = $this->session->lire(self::$cleSession);
         if (!is_string($jeton) || !preg_match('/\A[a-f0-9]{64}\z/', $jeton)) {
             // random_bytes fournit un secret imprévisible ; 32 octets deviennent 64 caractères hexadécimaux.
             $jeton = bin2hex(random_bytes(32));
-            $this->session->ecrire(self::CLE_SESSION, $jeton);
+            $this->session->ecrire(self::$cleSession, $jeton);
         }
         return $jeton;
     }
@@ -78,7 +78,7 @@ final class GestionnaireCsrf
         } else {
             $fourni = $requete->entete($this->nomEntete);
         }
-        $attendu = $this->session->lire(self::CLE_SESSION);
+        $attendu = $this->session->lire(self::$cleSession);
         if (!is_string($attendu) || !is_string($fourni)
             || !preg_match('/\A[a-f0-9]{64}\z/', $fourni)
         ) {

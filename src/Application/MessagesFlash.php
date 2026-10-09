@@ -9,7 +9,7 @@ use QalamCode\PhpCleanCodeWeb\Application\Port\StockageSession;
 /** Garde un message en session jusqu'à sa lecture sur la requête suivante. */
 final class MessagesFlash
 {
-    private const CLE_SESSION = '_qalam_code_web_flash';
+    private static $cleSession = '_qalam_code_web_flash';
     private $session;
 
     public function __construct(StockageSession $session)
@@ -23,7 +23,7 @@ final class MessagesFlash
         $this->verifierCle($cle);
         $messages = $this->messagesSession();
         $messages[$cle] = $message;
-        $this->session->ecrire(self::CLE_SESSION, $messages);
+        $this->session->ecrire(self::$cleSession, $messages);
     }
 
     /** Retourne puis efface le message, ou null s'il n'existe pas. */
@@ -37,13 +37,13 @@ final class MessagesFlash
 
         $message = $messages[$cle];
         unset($messages[$cle]);
-        $this->session->ecrire(self::CLE_SESSION, $messages);
+        $this->session->ecrire(self::$cleSession, $messages);
         return $message;
     }
 
     private function messagesSession(): array
     {
-        $messages = $this->session->lire(self::CLE_SESSION, []);
+        $messages = $this->session->lire(self::$cleSession, []);
         return is_array($messages) ? $messages : [];
     }
 
