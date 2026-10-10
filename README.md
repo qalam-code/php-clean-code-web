@@ -48,6 +48,11 @@ resources/vues/partiels/
 
 `MoteurVue::rendreAvecLayout('bonjour', ...)` rend `vue.html` et associe ses actifs. `ServeurActifsVue` sert uniquement `style.css` et `script.js` par le point d entree web ; les sources des vues ne sont pas exposées. Les marqueurs `{{ nom }}` dans le HTML sont remplacés par des valeurs échappées.
 
+## Fichiers téléversés
+
+Les actions de route reçoivent la `Requete` du socle API. Pour un formulaire `multipart/form-data`, l’application peut lire les métadonnées avec `$requete->fichier('document')` ou `$requete->fichiers()`. Les champs multiples comme `documents[]` sont représentés par des tableaux de `FichierTeleverse`.
+
+Le nom original et le type MIME annoncés par le navigateur ne sont pas fiables. Le framework fournit le code d’erreur PHP et le chemin temporaire, mais ne stocke pas le fichier. L’application doit vérifier le contenu, appliquer ses limites et confier le stockage à un adaptateur d’infrastructure.
 ## Protection CSRF
 
 Les méthodes `POST`, `PUT`, `PATCH` et `DELETE` sont protégées par défaut. Une route peut choisir explicitement `csrf => true` ou `csrf => false`. La route POST Bonjour active la protection ; le formulaire contient un jeton lié à la session. `GestionnaireCsrf` accepte aussi un en-tête AJAX configurable.

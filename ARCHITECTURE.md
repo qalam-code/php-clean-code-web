@@ -40,6 +40,9 @@ Le middleware de démonstration `exemples/middlewares/MesurerTempsMiddleware.php
 
 Les en-têtes de sécurité sont aussi appliqués à la frontière HTTP par EnTetesSecuriteMiddleware. Les protections de base sont configurables ; CSP et HSTS restent explicites car leur pertinence dépend du contenu et du déploiement HTTPS.
 
+## Fichiers téléversés
+
+Le socle API lit `$_FILES` au point d’entrée et expose les métadonnées sous forme d’objets `FichierTeleverse` dans `Requete`. Le contrôleur web peut transmettre le fichier à un cas d’usage sous une forme adaptée ; le domaine ne dépend ni de PHP ni de `$_FILES`. La vérification réelle du type et du contenu, les limites de taille et le stockage durable appartiennent aux adaptateurs de l’application.
 ## Parcours d'une page
 
 1. Le point d'entrée construit la requête à partir des données HTTP.

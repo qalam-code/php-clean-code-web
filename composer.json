@@ -1,24 +1,24 @@
 {
-    "name": "qalam-code/php-clean-code-web",
-    "description": "Framework PHP pour applications web construit sur phpCleanCode",
-    "type": "library",
-    "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/qalam-code/phpCleanCode"
-        }
-    ],
-    "require": {
-        "php": ">=7.0",
-        "qalam-code/php-clean-code": "^0.3"
-    },
-    "autoload": {
-        "psr-4": {
-            "QalamCode\\PhpCleanCodeWeb\\": "src/"
-        }
-    },
-    "scripts": {
-        "test": "php tests/run.php"
+  "name": "qalam-code/php-clean-code-web",
+  "description": "Framework PHP pour applications web construit sur phpCleanCode",
+  "type": "library",
+  "license": "MIT",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/qalam-code/phpCleanCode"
     }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "qalam-code/php-clean-code": "^0.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "QalamCode\\PhpCleanCodeWeb\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": "php tests/run.php"
+  }
 }
